@@ -51,6 +51,7 @@
       <li><a onclick="goTo('projects-sec')">03 / Projects</a></li>
       <li><a onclick="goTo('contact-sec')">04 / Contact</a></li>
     </ul>
+    <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">[ THEME: NEON ]</button>
     <button class="menu-btn" onclick="openMobile()" aria-label="menu">☰</button>
   </nav>
 
@@ -131,7 +132,7 @@
       <span class="sec-num">/ 02</span>
       <span class="sec-label">sys.capabilities</span>
     </div>
-    <div class="sec-title">TECH <span class="accent">STACK</span></div>
+    <div class="sec-title glitch-hover" data-text="TECH STACK">TECH <span class="accent">STACK</span></div>
     <div class="skills-grid" id="skillsGrid"></div>
 
     <div style="margin-top:2.6rem;">
@@ -152,7 +153,7 @@
       <span class="sec-num">/ 03</span>
       <span class="sec-label">project.log // case_studies</span>
     </div>
-    <div class="sec-title">PROJ<span class="accent">ECTS</span></div>
+    <div class="sec-title glitch-hover" data-text="PROJECTS">PROJ<span class="accent">ECTS</span></div>
     <div class="projects-grid" id="projectsGrid"></div>
   </section>
 

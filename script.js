@@ -1,4 +1,30 @@
 /* PERFORMANCE: pause when tab hidden */
+let cTeal, cViolet, cYellow, cRed, hexTeal, hexViolet, hexYellow;
+function syncColors() {
+  const st = getComputedStyle(document.body);
+  hexTeal = st.getPropertyValue('--teal').trim();
+  hexViolet = st.getPropertyValue('--violet').trim();
+  hexYellow = st.getPropertyValue('--yellow').trim();
+  const hex2rgb = (hex) => {
+    let h = hex.replace('#', '');
+    if(h.length===3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    return parseInt(h.substring(0,2),16)+','+parseInt(h.substring(2,4),16)+','+parseInt(h.substring(4,6),16);
+  };
+  cTeal = hex2rgb(hexTeal);
+  cViolet = hex2rgb(hexViolet);
+  cYellow = hex2rgb(hexYellow);
+  cRed = hex2rgb(st.getPropertyValue('--red').trim() || '#ef4444');
+}
+syncColors();
+
+function toggleTheme() {
+  document.body.classList.toggle('theme-amber');
+  const isAmber = document.body.classList.contains('theme-amber');
+  document.getElementById('themeToggle').innerText = isAmber ? '[ THEME: AMBER ]' : '[ THEME: NEON ]';
+  syncColors();
+}
+
+
 let isVisible = true;
 document.addEventListener('visibilitychange', () => {
   isVisible = document.visibilityState === 'visible';
@@ -47,7 +73,7 @@ function drawMesh() {
       const p1 = pts[r][c], p2 = pts[r][c+1], p3 = pts[r+1][c], p4 = pts[r+1][c+1];
       const cd = 1 - Math.abs(c / cols - 0.3) * 1.2;
       const a = 0.025 + cd * 0.05;
-      meshX.strokeStyle = `rgba(45,255,213,${a})`;
+      meshX.strokeStyle = `rgba(${cTeal},${a})`;
       meshX.lineWidth = 0.4;
       meshX.beginPath();
       meshX.moveTo(p1.x, p1.y); meshX.lineTo(p2.x, p2.y);
@@ -65,7 +91,7 @@ function drawMesh() {
       if (c === 0) meshX.moveTo(pts[r][c].x, pts[r][c].y);
       else meshX.lineTo(pts[r][c].x, pts[r][c].y);
     }
-    meshX.strokeStyle = `rgba(239,68,68,0.12)`;
+    meshX.strokeStyle = `rgba(${cRed},0.12)`;
     meshX.lineWidth = 0.5;
     meshX.stroke();
   }
@@ -91,7 +117,7 @@ function drawFlow() {
     }
     const a = 0.03 + rNorm * 0.13;
     const isViolet = r % 4 === 0;
-    flowX.strokeStyle = isViolet ? `rgba(168,85,247,${a * 0.7})` : `rgba(45,255,213,${a})`;
+    flowX.strokeStyle = isViolet ? `rgba(${cViolet},${a * 0.7})` : `rgba(${cTeal},${a})`;
     flowX.lineWidth = 0.5;
     flowX.stroke();
   }
@@ -110,9 +136,9 @@ function drawFlow() {
     const a = 0.12 + rNorm * 0.4;
     flowX.beginPath();
     flowX.arc(x, y, sz, 0, Math.PI * 2);
-    if (i % 7 === 0) flowX.fillStyle = `rgba(168,85,247,${a})`;
-    else if (i % 13 === 0) flowX.fillStyle = `rgba(251,191,36,${a * 0.7})`;
-    else flowX.fillStyle = `rgba(45,255,213,${a})`;
+    if (i % 7 === 0) flowX.fillStyle = `rgba(${cViolet},${a})`;
+    else if (i % 13 === 0) flowX.fillStyle = `rgba(${cYellow},${a * 0.7})`;
+    else flowX.fillStyle = `rgba(${cTeal},${a})`;
     flowX.fill();
   }
   flowX.font = '9px "Share Tech Mono", monospace';
@@ -124,7 +150,7 @@ function drawFlow() {
     const w1 = Math.sin(cf * 0.16 + t * 1.0 + rNorm * 0.3 * FROWS) * 50 * rNorm;
     const w2 = Math.sin(cf * 0.08 + t * 0.5 + rNorm * 0.15 * FROWS) * 28 * rNorm;
     const y = baseY - w1 - w2 - rNorm * ch * 0.4 - 12;
-    flowX.fillStyle = `rgba(45,255,213,0.22)`;
+    flowX.fillStyle = `rgba(${cTeal},0.22)`;
     flowX.fillText(labels[i], x - 8, y);
   }
 }
@@ -229,7 +255,7 @@ if (heroC) {
           heroX.beginPath();
           heroX.moveTo(a.x, a.y);
           heroX.lineTo(b.x, b.y);
-          heroX.strokeStyle = `rgba(45,255,213,${alpha * 0.7})`;
+          heroX.strokeStyle = `rgba(${cTeal},${alpha * 0.7})`;
           heroX.lineWidth = 0.5;
           heroX.stroke();
         }
@@ -245,13 +271,13 @@ if (heroC) {
       heroX.arc(p.x, p.y, sz, 0, Math.PI * 2);
       const isViolet = i % 11 === 0;
       const isYellow = i % 17 === 0;
-      if (isYellow) heroX.fillStyle = `rgba(251,191,36,${alpha})`;
-      else if (isViolet) heroX.fillStyle = `rgba(168,85,247,${alpha})`;
-      else heroX.fillStyle = `rgba(45,255,213,${alpha})`;
+      if (isYellow) heroX.fillStyle = `rgba(${cYellow},${alpha})`;
+      else if (isViolet) heroX.fillStyle = `rgba(${cViolet},${alpha})`;
+      else heroX.fillStyle = `rgba(${cTeal},${alpha})`;
       heroX.fill();
       if (alpha > 0.7) {
         heroX.shadowBlur = 8;
-        heroX.shadowColor = '#2dffd5';
+        heroX.shadowColor = hexTeal;
         heroX.fill();
         heroX.shadowBlur = 0;
       }
@@ -260,13 +286,13 @@ if (heroC) {
     // Inner orbital ring
     heroX.beginPath();
     heroX.ellipse(cx, cy, radius * 1.3, radius * 0.25, ht * 0.3, 0, Math.PI * 2);
-    heroX.strokeStyle = 'rgba(168,85,247,0.25)';
+    heroX.strokeStyle = 'rgba(${cViolet},0.25)';
     heroX.lineWidth = 1;
     heroX.stroke();
 
     heroX.beginPath();
     heroX.ellipse(cx, cy, radius * 1.5, radius * 0.18, -ht * 0.2, 0, Math.PI * 2);
-    heroX.strokeStyle = 'rgba(45,255,213,0.18)';
+    heroX.strokeStyle = 'rgba(${cTeal},0.18)';
     heroX.lineWidth = 1;
     heroX.stroke();
 
@@ -286,17 +312,17 @@ if (heroC) {
       const x = cx + Math.cos(ang) * r;
       const y = cy + Math.sin(ang) * r * 0.5;
       const op = 0.4 + Math.sin(ht * 2 + i) * 0.2;
-      heroX.fillStyle = i % 2 === 0 ? `rgba(45,255,213,${op})` : `rgba(168,85,247,${op})`;
+      heroX.fillStyle = i % 2 === 0 ? `rgba(${cTeal},${op})` : `rgba(${cViolet},${op})`;
       heroX.textAlign = 'center';
       heroX.fillText(l.txt, x, y);
     });
 
     // Center label
-    heroX.fillStyle = 'rgba(45,255,213,0.7)';
+    heroX.fillStyle = 'rgba(${cTeal},0.7)';
     heroX.font = 'bold 9px Orbitron, monospace';
     heroX.textAlign = 'center';
     heroX.fillText('// DATA.SPHERE', cx, H - 18);
-    heroX.fillStyle = 'rgba(168,85,247,0.5)';
+    heroX.fillStyle = 'rgba(${cViolet},0.5)';
     heroX.font = '8px Share Tech Mono, monospace';
     heroX.fillText('ANALYZING · SAMPLE PREVIEW', cx, H - 6);
 
@@ -350,10 +376,10 @@ function drawAbout() {
     const y = padT + ch - (i / 4) * ch;
     aX.beginPath();
     aX.moveTo(padL, y); aX.lineTo(W - padR, y);
-    aX.strokeStyle = i === 0 ? 'rgba(45,255,213,0.5)' : 'rgba(45,255,213,0.07)';
+    aX.strokeStyle = i === 0 ? 'rgba(${cTeal},0.5)' : 'rgba(${cTeal},0.07)';
     aX.lineWidth = i === 0 ? 1 : 0.5;
     aX.stroke();
-    aX.fillStyle = 'rgba(45,255,213,0.6)';
+    aX.fillStyle = 'rgba(${cTeal},0.6)';
     aX.fillText((i*0.25).toFixed(2), padL - 4, y + 3);
   }
 
@@ -364,7 +390,7 @@ function drawAbout() {
   const ty2 = padT + ch - (0.85) * ch;
   aX.moveTo(padL, ty1);
   aX.lineTo(padL + cw, ty2);
-  aX.strokeStyle = 'rgba(168,85,247,0.7)';
+  aX.strokeStyle = 'rgba(${cViolet},0.7)';
   aX.lineWidth = 1.5;
   aX.stroke();
   aX.setLineDash([]);
@@ -378,23 +404,23 @@ function drawAbout() {
     
     aX.beginPath();
     aX.arc(px, py, r, 0, Math.PI * 2);
-    let fill = `rgba(45,255,213,${0.3 + pulse * 0.5})`;
-    if (p.col === 'violet') fill = `rgba(168,85,247,${0.4 + pulse * 0.6})`;
-    else if (p.col === 'yellow') fill = `rgba(251,191,36,${0.5 + pulse * 0.5})`;
+    let fill = `rgba(${cTeal},${0.3 + pulse * 0.5})`;
+    if (p.col === 'violet') fill = `rgba(${cViolet},${0.4 + pulse * 0.6})`;
+    else if (p.col === 'yellow') fill = `rgba(${cYellow},${0.5 + pulse * 0.5})`;
     
     aX.fillStyle = fill;
     aX.fill();
     
     if (pulse > 0.8) {
       aX.shadowBlur = 8;
-      aX.shadowColor = p.col === 'violet' ? '#a855f7' : (p.col === 'yellow' ? '#fbbf24' : '#2dffd5');
+      aX.shadowColor = p.col === 'violet' ? hexViolet : (p.col === 'yellow' ? hexYellow : hexTeal);
       aX.fill();
       aX.shadowBlur = 0;
     }
   });
 
   // X labels
-  aX.fillStyle = 'rgba(45,255,213,0.55)';
+  aX.fillStyle = 'rgba(${cTeal},0.55)';
   aX.textAlign = 'center';
   for(let i=0; i<=4; i++){
     const x = padL + (i/4) * cw;
@@ -402,7 +428,7 @@ function drawAbout() {
   }
 
   // Trendline label
-  aX.fillStyle = 'rgba(168,85,247,0.85)';
+  aX.fillStyle = 'rgba(${cViolet},0.85)';
   aX.font = '8px "Share Tech Mono", monospace';
   aX.fillText('R² = 0.87', W - padR - 25, ty2 - 8);
 
@@ -529,7 +555,7 @@ projects.forEach(p => {
       <div class="proj-img-tag">${p.tag}</div>
     </div>
     <div class="proj-body">
-      <div class="proj-num">// ${p.num}${badge}</div>
+      <div class="proj-num glitch-hover" data-text="// ${p.num}">// ${p.num}${badge}</div>
       <div class="proj-title">${p.title}</div>
       <p class="proj-desc">${p.desc}</p>
       <div class="proj-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
