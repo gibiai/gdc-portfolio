@@ -598,3 +598,54 @@ revealElements.forEach((el) => {
   el.classList.add('reveal');
   observer.observe(el);
 });
+
+/* ═══ SOUND SYSTEM ═══ */
+let isSoundEnabled = false;
+const hoverSnd = new Audio('./assets/hover.mp3');
+const clickSnd = new Audio('./assets/click.wav');
+const glitchSnd = new Audio('./assets/glitch.mp3');
+hoverSnd.volume = 0.15;
+clickSnd.volume = 0.3;
+glitchSnd.volume = 0.1; // Il glitch può essere fastidioso se troppo alto!
+
+function toggleSound() {
+  isSoundEnabled = !isSoundEnabled;
+  document.getElementById('soundToggle').innerText = isSoundEnabled ? '[ SOUND: ON ]' : '[ SOUND: OFF ]';
+  if (isSoundEnabled) {
+    clickSnd.currentTime = 0;
+    clickSnd.play().catch(e => console.log('Audio error:', e));
+  }
+}
+
+function playHover() {
+  if (!isSoundEnabled) return;
+  hoverSnd.currentTime = 0;
+  hoverSnd.play().catch(e => {});
+}
+
+function playClick() {
+  if (!isSoundEnabled) return;
+  clickSnd.currentTime = 0;
+  clickSnd.play().catch(e => {});
+}
+
+function playGlitch(e) {
+  if (!isSoundEnabled) return;
+  // Gli effetti glitch sono gestiti da keyframes gl1 e gl2. Ne triggeriamo solo uno per evitare suoni doppi.
+  if (e.animationName === 'gl1') {
+    glitchSnd.currentTime = 0;
+    glitchSnd.play().catch(e => {});
+  }
+}
+
+setTimeout(() => {
+  document.querySelectorAll('.btn-p, .btn-o, .theme-btn, .cl, .proj, .nav-links a').forEach(el => {
+    el.addEventListener('mouseenter', playHover);
+    el.addEventListener('click', playClick);
+  });
+  
+  // Sincronizzazione suono glitch con animazione CSS!
+  document.querySelectorAll('.hero-name, .glitch-auto').forEach(el => {
+    el.addEventListener('animationiteration', playGlitch);
+  });
+}, 500);
