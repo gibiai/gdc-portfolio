@@ -646,6 +646,7 @@ setTimeout(() => {
   
   // Sincronizzazione suono glitch con animazione CSS!
   document.querySelectorAll('.hero-name, .glitch-auto').forEach(el => {
+    el.addEventListener('animationstart', playGlitch);
     el.addEventListener('animationiteration', playGlitch);
   });
 }, 500);
