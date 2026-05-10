@@ -319,75 +319,94 @@ resizeAbout();
 window.addEventListener('resize', resizeAbout);
 
 let act = 0;
-const months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
-const rev = [42,48,55,51,63,71,68,74,82,88,94,102];
-const tgt = [45,50,55,60,65,70,75,80,82,85,90,95];
-const maxR = 110;
+const scData = [];
+for (let i = 0; i < 60; i++) {
+  const nx = Math.random();
+  const ny = nx * 0.7 + (Math.random() * 0.3);
+  scData.push({
+    x: nx,
+    y: ny,
+    sz: 1 + Math.random() * 2.5,
+    pSpeed: 0.02 + Math.random() * 0.04,
+    pOff: Math.random() * Math.PI * 2,
+    col: Math.random() > 0.85 ? 'violet' : (Math.random() > 0.92 ? 'yellow' : 'teal')
+  });
+}
 
 function drawAbout() {
   if (!isVisible) { requestAnimationFrame(drawAbout); return; }
   if (ac.width !== ac.offsetWidth * 2) resizeAbout();
   const W = ac.offsetWidth, H = ac.offsetHeight;
   aX.clearRect(0, 0, W, H);
-  const padL = 28, padR = 10, padT = 10, padB = 22;
+  
+  const padL = 30, padR = 15, padT = 15, padB = 22;
   const cw = W - padL - padR;
   const ch = H - padT - padB;
-  const bW = cw / rev.length - 2;
 
-  // grid
-  aX.font = '8px Share Tech Mono, monospace';
+  // Grid
+  aX.font = '8px "Share Tech Mono", monospace';
+  aX.textAlign = 'right';
   for (let i = 0; i <= 4; i++) {
-    const v = (maxR / 4) * i;
-    const y = padT + ch - (v / maxR) * ch;
+    const y = padT + ch - (i / 4) * ch;
     aX.beginPath();
     aX.moveTo(padL, y); aX.lineTo(W - padR, y);
-    aX.strokeStyle = i === 0 ? 'rgba(45,255,213,0.4)' : 'rgba(45,255,213,0.07)';
+    aX.strokeStyle = i === 0 ? 'rgba(45,255,213,0.5)' : 'rgba(45,255,213,0.07)';
     aX.lineWidth = i === 0 ? 1 : 0.5;
     aX.stroke();
     aX.fillStyle = 'rgba(45,255,213,0.6)';
-    aX.textAlign = 'right';
-    aX.fillText(v + 'k', padL - 4, y + 3);
+    aX.fillText((i*0.25).toFixed(2), padL - 4, y + 3);
   }
 
-  // bars
-  rev.forEach((v, i) => {
-    const x = padL + i * (bW + 2);
-    const h = (v / maxR) * ch;
-    const y = padT + ch - h;
-    const pulse = Math.sin(act * 1.5 + i * 0.5) * 0.08 + 0.92;
-    const g = aX.createLinearGradient(0, y, 0, y + h);
-    g.addColorStop(0, `rgba(45,255,213,${0.6 * pulse})`);
-    g.addColorStop(1, `rgba(45,255,213,${0.2 * pulse})`);
-    aX.fillStyle = g;
-    aX.fillRect(x, y, bW, h);
-    aX.strokeStyle = `rgba(45,255,213,${0.7 * pulse})`;
-    aX.lineWidth = 0.8;
-    aX.strokeRect(x, y, bW, h);
-  });
-
-  // target
+  // Trendline
   aX.beginPath();
-  aX.setLineDash([3, 2]);
-  tgt.forEach((v, i) => {
-    const x = padL + i * (bW + 2) + bW / 2;
-    const y = padT + ch - (v / maxR) * ch;
-    if (i === 0) aX.moveTo(x, y); else aX.lineTo(x, y);
-  });
-  aX.strokeStyle = 'rgba(168,85,247,0.85)';
-  aX.lineWidth = 1.3;
+  aX.setLineDash([3, 3]);
+  const ty1 = padT + ch - (0.15) * ch;
+  const ty2 = padT + ch - (0.85) * ch;
+  aX.moveTo(padL, ty1);
+  aX.lineTo(padL + cw, ty2);
+  aX.strokeStyle = 'rgba(168,85,247,0.7)';
+  aX.lineWidth = 1.5;
   aX.stroke();
   aX.setLineDash([]);
 
-  // months
-  aX.fillStyle = 'rgba(45,255,213,0.55)';
-  aX.font = '8px Share Tech Mono, monospace';
-  aX.textAlign = 'center';
-  months.forEach((m, i) => {
-    const x = padL + i * (bW + 2) + bW / 2;
-    aX.fillText(m, x, padT + ch + 13);
+  // Scatter points
+  scData.forEach((p, i) => {
+    const px = padL + p.x * cw;
+    const py = padT + ch - p.y * ch;
+    const pulse = Math.sin(act * p.pSpeed + p.pOff) * 0.5 + 0.5; // 0 to 1
+    const r = p.sz + pulse * 1.5;
+    
+    aX.beginPath();
+    aX.arc(px, py, r, 0, Math.PI * 2);
+    let fill = `rgba(45,255,213,${0.3 + pulse * 0.5})`;
+    if (p.col === 'violet') fill = `rgba(168,85,247,${0.4 + pulse * 0.6})`;
+    else if (p.col === 'yellow') fill = `rgba(251,191,36,${0.5 + pulse * 0.5})`;
+    
+    aX.fillStyle = fill;
+    aX.fill();
+    
+    if (pulse > 0.8) {
+      aX.shadowBlur = 8;
+      aX.shadowColor = p.col === 'violet' ? '#a855f7' : (p.col === 'yellow' ? '#fbbf24' : '#2dffd5');
+      aX.fill();
+      aX.shadowBlur = 0;
+    }
   });
 
-  act += 0.014;
+  // X labels
+  aX.fillStyle = 'rgba(45,255,213,0.55)';
+  aX.textAlign = 'center';
+  for(let i=0; i<=4; i++){
+    const x = padL + (i/4) * cw;
+    aX.fillText((i*0.25).toFixed(2), x, padT + ch + 13);
+  }
+
+  // Trendline label
+  aX.fillStyle = 'rgba(168,85,247,0.85)';
+  aX.font = '8px "Share Tech Mono", monospace';
+  aX.fillText('R² = 0.87', W - padR - 25, ty2 - 8);
+
+  act += 1;
   requestAnimationFrame(drawAbout);
 }
 drawAbout();
