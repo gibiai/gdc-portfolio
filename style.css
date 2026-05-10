@@ -81,10 +81,10 @@
   /* NAME — white fill + violet outline + glitch */
   .hero-name{font-family:'Orbitron',monospace;font-size:clamp(2.6rem,5.2vw,4.6rem);font-weight:900;line-height:1;color:#ffffff;margin-bottom:0.3rem;position:relative;display:inline-block;-webkit-text-stroke:1.5px var(--violet);text-shadow:0 0 25px rgba(var(--violet-rgb),0.4);}
   .hero-name::before,.hero-name::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;color:#ffffff;-webkit-text-stroke:1.5px var(--violet);}
-  .hero-name::before{animation:gl1 4s infinite;clip-path:polygon(0 0,100% 0,100% 33%,0 33%);}
-  .hero-name::after{animation:gl2 4s infinite;clip-path:polygon(0 67%,100% 67%,100% 100%,0 100%);color:var(--teal);-webkit-text-stroke:1.5px var(--teal);}
-  @keyframes gl1{0%,90%,100%{transform:translate(0)}92%{transform:translate(-2px,1px)}94%{transform:translate(2px,-1px)}}
-  @keyframes gl2{0%,90%,100%{transform:translate(0);opacity:0}92%{transform:translate(2px,-1px);opacity:0.8}94%{transform:translate(-2px,1px);opacity:0.8}96%{opacity:0}}
+  .hero-name::before{animation:gl1 10s infinite;clip-path:polygon(0 0,100% 0,100% 33%,0 33%);}
+  .hero-name::after{animation:gl2 10s infinite;clip-path:polygon(0 67%,100% 67%,100% 100%,0 100%);color:var(--teal);-webkit-text-stroke:1.5px var(--teal);}
+  @keyframes gl1{0%,90%,100%{transform:translate(0)}92%{transform:translate(-3px,1px)}94%{transform:translate(3px,-2px)}96%{transform:translate(-2px,2px)}98%{transform:translate(2px,-1px)}}
+  @keyframes gl2{0%,90%,100%{transform:translate(0);opacity:0}92%{transform:translate(3px,-2px);opacity:0.8}94%{transform:translate(-3px,1px);opacity:0.8}96%{transform:translate(2px,-1px);opacity:0.8}98%{transform:translate(-2px,2px);opacity:0.8}99%{opacity:0}}
 
   .hero-role{font-family:'Orbitron',monospace;font-size:clamp(1.05rem,2.1vw,1.4rem);color:#ffffff;letter-spacing:0.1em;margin-bottom:0.5rem;font-weight:700;}
   .hero-role .amp{color:var(--violet);font-weight:400;margin:0 0.3em;}
@@ -175,8 +175,8 @@
   /* Auto Glitch Effect */
   .glitch-auto{display:inline-block;position:relative;}
   .glitch-auto::before, .glitch-auto::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
-  .glitch-auto::before{animation:gl1 4s infinite;color:var(--violet);-webkit-text-stroke:1px var(--violet);z-index:-1;clip-path:polygon(0 0,100% 0,100% 45%,0 45%);}
-  .glitch-auto::after{animation:gl2 4s infinite;color:var(--teal);-webkit-text-stroke:1px var(--teal);z-index:-2;clip-path:polygon(0 55%,100% 55%,100% 100%,0 100%);}
+  .glitch-auto::before{animation:gl1 10s infinite;color:var(--violet);-webkit-text-stroke:1px var(--violet);z-index:-1;clip-path:polygon(0 0,100% 0,100% 45%,0 45%);}
+  .glitch-auto::after{animation:gl2 10s infinite;color:var(--teal);-webkit-text-stroke:1px var(--teal);z-index:-2;clip-path:polygon(0 55%,100% 55%,100% 100%,0 100%);}
 
   /* SKILLS */
   .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1px;background:rgba(var(--teal-rgb),0.1);}
