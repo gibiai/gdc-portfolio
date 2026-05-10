@@ -131,6 +131,7 @@ function drawFlow() {
 
 function bgLoop() {
   if (isVisible) {
+    if (meshC.width !== meshC.offsetWidth) resize();
     mx += (targetMx - mx) * 0.05;
     my += (targetMy - my) * 0.05;
     
@@ -180,6 +181,8 @@ if (heroC) {
 
   function drawHero() {
     if (!isVisible) { requestAnimationFrame(drawHero); return; }
+    if (heroC.width !== heroC.offsetWidth * 2) resizeHero();
+    
     const W = heroC.offsetWidth, H = heroC.offsetHeight;
     heroX.clearRect(0, 0, W, H);
     const cx = W / 2, cy = H / 2;
@@ -221,7 +224,8 @@ if (heroC) {
         const dist = Math.sqrt(dx*dx + dy*dy);
         if (dist < radius * 0.55) {
           const avgZ = (a.z + b.z) / 2;
-          const alpha = (avgZ + 1) / 2 * 0.45;
+          let alpha = (avgZ + 1) / 2 * 0.45;
+          alpha = Math.max(0, Math.min(1, alpha));
           heroX.beginPath();
           heroX.moveTo(a.x, a.y);
           heroX.lineTo(b.x, b.y);
@@ -234,7 +238,8 @@ if (heroC) {
 
     // Draw nodes
     projected.forEach((p, i) => {
-      const alpha = (p.z + 1) / 2;
+      let alpha = (p.z + 1) / 2;
+      alpha = Math.max(0, Math.min(1, alpha));
       const sz = 1 + alpha * 2;
       heroX.beginPath();
       heroX.arc(p.x, p.y, sz, 0, Math.PI * 2);
@@ -321,6 +326,7 @@ const maxR = 110;
 
 function drawAbout() {
   if (!isVisible) { requestAnimationFrame(drawAbout); return; }
+  if (ac.width !== ac.offsetWidth * 2) resizeAbout();
   const W = ac.offsetWidth, H = ac.offsetHeight;
   aX.clearRect(0, 0, W, H);
   const padL = 28, padR = 10, padT = 10, padB = 22;
