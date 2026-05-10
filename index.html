@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Gabriele De Carlo — Data Analyst & Visual Storyteller. Turning data into clear business decisions. Python, SQL, Power BI, Machine Learning, Visual Arts.">
+<meta name="author" content="Gabriele De Carlo">
+<meta name="theme-color" content="#020a0e">
+<meta property="og:title" content="Gabriele De Carlo — Data Analyst & Visual Storyteller">
+<meta property="og:description" content="Data Analyst with analytical precision and creative vision. 10+ years in 3D & motion design.">
+<meta property="og:type" content="website">
+<title>Gabriele De Carlo // Data Analyst & Visual Storyteller</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+<link rel=\stylesheet\ href=\./style.css\>
+</head>
+<body>
+
+<div class="bg-wrap">
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="glow g3"></div>
+  <canvas id="bg-mesh"></canvas>
+  <canvas id="bg-flow"></canvas>
+</div>
+
+<div class="hud-c hud-tl"></div>
+<div class="hud-c hud-tr"></div>
+<div class="hud-c hud-bl"></div>
+<div class="hud-c hud-br"></div>
+<div class="scanlines"></div>
+<div class="stat-bar">SYS::ONLINE // GDC_PORTFOLIO v6.0 // <span class="y">LISBON.PT</span> // UTC+1</div>
+
+<!-- Mobile menu -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobile()"></div>
+<aside class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobile()">✕</button>
+  <a onclick="goTo('hero');closeMobile()">00 / Home</a>
+  <a onclick="goTo('about-sec');closeMobile()">01 / About</a>
+  <a onclick="goTo('skills-sec');closeMobile()">02 / Skills</a>
+  <a onclick="goTo('projects-sec');closeMobile()">03 / Projects</a>
+  <a onclick="goTo('contact-sec');closeMobile()">04 / Contact</a>
+</aside>
+
+<div class="site">
+  <nav>
+    <div class="nav-logo">GDC<span class="accent">_</span></div>
+    <ul class="nav-links">
+      <li><a onclick="goTo('hero')">00 / Home</a></li>
+      <li><a onclick="goTo('about-sec')">01 / About</a></li>
+      <li><a onclick="goTo('skills-sec')">02 / Skills</a></li>
+      <li><a onclick="goTo('projects-sec')">03 / Projects</a></li>
+      <li><a onclick="goTo('contact-sec')">04 / Contact</a></li>
+    </ul>
+    <button class="menu-btn" onclick="openMobile()" aria-label="menu">☰</button>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-left">
+      <div class="hero-tag"><span class="blink">▸</span> profile.init — system ready</div>
+      <h1 class="hero-name" data-text="GABRIELE">GABRIELE</h1>
+      <h1 class="hero-name" data-text="DE CARLO" style="margin-bottom:0.7rem;">DE CARLO</h1>
+      <div class="hero-role">Data Analyst <span class="amp">&amp;</span> <span class="second">Visual Storyteller</span><span class="typing-cursor"></span></div>
+      <div class="hero-stack">Python <span class="dot">·</span> SQL <span class="dot">·</span> Power BI <span class="dot">·</span> ML <span class="dot">·</span> Visual Arts</div>
+      <div class="divider-row">
+        <div class="divider"></div>
+        <span class="divider-text">— EST. 2026</span>
+      </div>
+      <div class="status-row">
+        <div class="pill live">Open to work</div>
+        <div class="pill violet">Lisbon · relocatable</div>
+        <div class="pill yellow">⚡ 24h response</div>
+      </div>
+      <p class="hero-bio">
+        Data Analyst with <strong>analytical precision</strong> and <em>creative vision</em>.<br>
+        10+ years in 3D, motion design &amp; visual arts — distinctive approach to <strong>data storytelling</strong>.<br>
+        Turning complex data into decisions that move businesses forward.
+      </p>
+      <div class="cta-row">
+        <a class="btn-p" onclick="goTo('projects-sec')">View Projects ↗</a>
+        <a class="btn-o" onclick="goTo('contact-sec')">Book a Call</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <!-- SPLINE: replace this whole div content with your <iframe> or <spline-viewer> when ready -->
+      <div id="spline-container">
+        <canvas id="hero-canvas"></canvas>
+      </div>
+    </div>
+    <div class="scroll-down" onclick="goTo('about-sec')">
+      <span>scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <section id="about-sec">
+    <div class="about-photo">
+      <div class="frame-corner fc-tl"></div>
+      <div class="frame-corner fc-tr"></div>
+      <div class="frame-corner fc-bl"></div>
+      <div class="frame-corner fc-br"></div>
+      <img src="./assets/profile.jpg" alt="Gabriele De Carlo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <div class="ph-icon" style="display:none;">👤</div>
+      <div class="ph-label">/// ph_GDC.jpg</div>
+    </div>
+    <div class="about-content">
+      <div class="sec-head">
+        <span class="sec-num">/ 01</span>
+        <span class="sec-label">about_me</span>
+      </div>
+      <div class="about-tagline">Turning data into clear business decisions.</div>
+      <div class="about-tagline2">Background in visual design <span class="arrow">→</span> I make data understandable.</div>
+      <p class="about-bio">
+        Data Analyst with a unique blend of <strong>analytical precision</strong> and creative vision. I help businesses make better decisions using data. With a background in visual arts and computer graphics, I bring a strong focus on <strong>clarity, storytelling, and usability</strong> into data analysis. I work with Python (Pandas, NumPy), SQL, and data visualization tools to transform raw data into insights that support real-world decisions. With <strong>10+ years in visual arts</strong> (3D graphics, motion design), I bring a distinctive approach to data visualization and storytelling.
+      </p>
+    </div>
+    <div class="about-chart-card">
+      <div class="acc-head">
+        <div class="acc-title">// REVENUE.2026</div>
+        <div class="acc-tag">SAMPLE DATA</div>
+      </div>
+      <canvas class="acc-canvas" id="aboutChart"></canvas>
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <section class="section" id="skills-sec">
+    <div class="sec-head">
+      <span class="sec-num">/ 02</span>
+      <span class="sec-label">sys.capabilities</span>
+    </div>
+    <div class="sec-title">TECH <span class="accent">STACK</span></div>
+    <div class="skills-grid" id="skillsGrid"></div>
+
+    <div style="margin-top:2.6rem;">
+      <div class="sec-label" style="margin-bottom:0.9rem;color:var(--violet-l);">/ languages</div>
+      <div class="lang-row" id="langRow"></div>
+    </div>
+
+    <div style="margin-top:2.6rem;">
+      <div class="sec-label" style="margin-bottom:0.9rem;color:var(--violet-l);">/ certifications</div>
+      <div class="certs-row" id="certsRow"></div>
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <section class="section" id="projects-sec">
+    <div class="sec-head">
+      <span class="sec-num">/ 03</span>
+      <span class="sec-label">project.log // case_studies</span>
+    </div>
+    <div class="sec-title">PROJ<span class="accent">ECTS</span></div>
+    <div class="projects-grid" id="projectsGrid"></div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <section class="section" id="contact-sec">
+    <div class="sec-head">
+      <span class="sec-num">/ 04</span>
+      <span class="sec-label">establish.connection</span>
+    </div>
+    <div id="contact-grid">
+      <div>
+        <div class="contact-headline">I COULD BE YOUR<br>NEXT <span class="accent">DATA ANALYST</span>.</div>
+        <p class="contact-sub">Let's see how I can help your team. Book a call!</p>
+        <div class="contact-links-row">
+          <a class="cl" href="https://calendly.com/gabrieledecarlo/30min" target="_blank" rel="noopener">📅 Book Call</a>
+          <a class="cl" href="https://www.linkedin.com/in/gabriele-de-carlo-8b601598/" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a class="cl" href="https://github.com/gibiai" target="_blank" rel="noopener">GitHub ↗</a>
+          <a class="cl violet" href="https://valuable-pullover-8a2.notion.site/Power-BI-Dashboards-33302b5de78a80788aacebcbcaf32c06" target="_blank" rel="noopener">Power BI ↗</a>
+          <a class="cl yellow" href="https://drive.google.com/file/d/1CfUYKV-QUv_47AJjI1ftWNiHi4w3Za-U/view?usp=drive_link" target="_blank" rel="noopener">Resume ↗</a>
+        </div>
+        <div class="contact-info">
+          <div>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><a href="mailto:gabrieledecarlo9@gmail.com">gabrieledecarlo9@gmail.com</a></span></div>
+          <div>WhatsApp &nbsp;&nbsp;<span><a href="https://wa.me/393894777201" target="_blank" rel="noopener">+39 389 4777201</a> &nbsp;/&nbsp; <a href="https://wa.me/351933887748" target="_blank" rel="noopener">+351 933 887748</a></span></div>
+        </div>
+      </div>
+      <div class="status-block">
+        <div class="sb-label">/ current_status</div>
+        <div class="sb-row"><span class="ic">📍</span><span class="lbl">Location</span><span>Lisbon · relocatable</span></div>
+        <div class="sb-row"><span class="ic">🚀</span><span class="lbl">Open to</span><span>Full-time / Freelance</span></div>
+        <div class="sb-row"><span class="ic">🕐</span><span class="lbl">Timezone</span><span>CET (UTC+1)</span></div>
+        <div class="sb-row"><span class="ic">⚡</span><span class="lbl">Response</span><span>Within 24h</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <div class="quote-block">
+    <div class="quote-mark">"</div>
+    <div class="quote-text">The world is one big <span class="h">data problem</span>.</div>
+    <div class="quote-author">— Andrew Bloomberg</div>
+  </div>
+
+  <footer>
+    <p>© 2026 // GABRIELE DE CARLO — DATA ANALYST PORTFOLIO</p>
+    <p class="built">Built with curiosity, deployed on Vercel.</p>
+  </footer>
+</div>
+
+<script src=\./script.js\></script>
+</body>
+</html>
