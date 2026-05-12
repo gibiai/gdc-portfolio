@@ -532,6 +532,15 @@ const projects = [
     notion:null,
     github:'https://github.com/gibiai/Progetto_Gruppo2_07_Maggio_2026'
   },
+  {
+    num:'005', wip:false, bonus:false, done:true,
+    img:'./assets/gestionale.png', fallback:'fallback-gestionale', tag:'PYTHON // MANAGEMENT',
+    title:'PYTHON INVENTORY<br>MANAGEMENT SYSTEM',
+    desc:'Solo project: Developed an object-oriented Python application for inventory and order management. Integrated data visualization using Pandas and Matplotlib to analyze sales and stock levels.',
+    tags:['Python','Pandas','Matplotlib','OOP'],
+    notion:null,
+    github:'https://github.com/gibiai/DepositoPython_De_Carlo/tree/main/Venerdi%2008%3A05'
+  },
 ];
 const pg = document.getElementById('projectsGrid');
 projects.forEach(p => {
