@@ -557,7 +557,7 @@ const projects = [
   },
   {
     num:'006', wip:false, bonus:true, done:true,
-    img:'./assets/velocita.png', fallback:'fallback-velocita', tag:'BIKE-SHARING // ANALYTICS',
+    img:'./assets/bike_rent.jpeg', fallback:'fallback-velocita', tag:'BIKE-SHARING // ANALYTICS',
     title:'VELOCITTÀ ANALYTICS // CAPSTONE',
     desc:'End-to-end data analysis system for VeloCittà, an Italian bike-sharing startup operating in Milan, Rome, and Turin. Built as a capstone project covering object-oriented programming, SQL querying, NumPy numerical analysis, Pandas data processing, and Matplotlib/Seaborn visualization.',
     tags:['Python','SQL','NumPy','Pandas','Matplotlib','Seaborn','OOP'],
