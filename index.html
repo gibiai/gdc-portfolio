@@ -38,7 +38,8 @@
   <a onclick="goTo('about-sec');closeMobile()">01 / About</a>
   <a onclick="goTo('skills-sec');closeMobile()">02 / Skills</a>
   <a onclick="goTo('projects-sec');closeMobile()">03 / Projects</a>
-  <a onclick="goTo('contact-sec');closeMobile()">04 / Contact</a>
+  <a href="./powerbi.html">04 / Power BI</a>
+  <a onclick="goTo('contact-sec');closeMobile()">05 / Contact</a>
 </aside>
 
 <div class="site">
@@ -49,7 +50,8 @@
       <li><a onclick="goTo('about-sec')">01 / About</a></li>
       <li><a onclick="goTo('skills-sec')">02 / Skills</a></li>
       <li><a onclick="goTo('projects-sec')">03 / Projects</a></li>
-      <li><a onclick="goTo('contact-sec')">04 / Contact</a></li>
+      <li><a href="./powerbi.html">04 / Power BI</a></li>
+      <li><a onclick="goTo('contact-sec')">05 / Contact</a></li>
     </ul>
     <div style="display:flex; gap:0.5rem;">
       <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">[ THEME: NEON ]</button>
@@ -174,8 +176,8 @@
           <a class="cl" href="https://calendly.com/gabrieledecarlo/30min" target="_blank" rel="noopener">📅 Book Call</a>
           <a class="cl" href="https://www.linkedin.com/in/gabriele-de-carlo-8b601598/" target="_blank" rel="noopener">LinkedIn ↗</a>
           <a class="cl" href="https://github.com/gibiai" target="_blank" rel="noopener">GitHub ↗</a>
-          <a class="cl violet" onclick="openModal('pbiModal')">Power BI ↗</a>
-          <a class="cl yellow" href="https://drive.google.com/file/d/1CfUYKV-QUv_47AJjI1ftWNiHi4w3Za-U/view?usp=drive_link" target="_blank" rel="noopener">Resume ↗</a>
+          <a class="cl violet" href="./powerbi.html">Power BI ↗</a>
+          <a class="cl yellow" href="https://drive.google.com/file/d/1rcRuxKKy8ae8jbgzanzcSIMfGzufDJx2/view?usp=drive_link" target="_blank" rel="noopener">Resume ↗</a>
         </div>
         <div class="contact-info">
           <div>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><a href="mailto:gabrieledecarlo9@gmail.com">gabrieledecarlo9@gmail.com</a></span></div>
@@ -209,13 +211,15 @@
 <!-- ═══ MODALS ═══ -->
 <div id="certModal" class="gdc-modal-overlay" onclick="if(event.target===this) closeModal('certModal')">
   <div class="gdc-modal-content">
-    <button class="gdc-modal-close" onclick="closeModal('certModal')">[ CLOSE // ✕ ]</button>
+    <div class="gdc-modal-header">
+      <span class="sec-label">/ credential.specifications</span>
+      <button class="gdc-modal-close" onclick="closeModal('certModal')">[ CLOSE // ✕ ]</button>
+    </div>
     <div class="modal-body cert-modal-body">
-      <div class="modal-img-container">
-        <img src="./assets/boolean_cert.png" alt="Boolean Master in Data Analytics Certificate" class="modal-img">
+      <div class="modal-img-container" style="height: 480px; border: 1px solid rgba(var(--teal-rgb), 0.15);">
+        <iframe src="./assets/certificate.pdf#toolbar=0&navpanes=0" width="100%" height="100%" style="border: none;"></iframe>
       </div>
       <div class="modal-info-panel">
-        <div class="sec-label">/ credential.specifications</div>
         <h3 class="modal-subtitle">MASTER IN DATA ANALYTICS</h3>
         <div class="modal-meta-row">
           <div><span class="y">ISSUER:</span> Boolean Academy</div>
@@ -231,51 +235,6 @@
           <div><span class="accent">▸</span> <strong>Business Intelligence:</strong> Advanced Power BI interactive dashboard design, DAX formula scripting, and data modeling.</div>
           <div><span class="accent">▸</span> <strong>Applied Statistics &amp; ML:</strong> Exploratory data analysis, cohort analysis, hypothesis testing, and regression modeling.</div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="pbiModal" class="gdc-modal-overlay" onclick="if(event.target===this) closeModal('pbiModal')">
-  <div class="gdc-modal-content pbi-modal-content">
-    <button class="gdc-modal-close" onclick="closeModal('pbiModal')">[ CLOSE // ✕ ]</button>
-    <div class="modal-body pbi-modal-body">
-      <div class="sec-label">/ visual_analytics.showcase</div>
-      <h2 class="modal-title">POWER BI DASHBOARD SHOWCASE</h2>
-      <p class="modal-intro">
-        A curated selection of interactive Business Intelligence reports, engineered to translate dense business activities into clear, real-time strategic directions.
-      </p>
-      
-      <div class="pbi-showcase-container">
-        
-        <!-- Dashboard 1 -->
-        <div class="pbi-showcase-card">
-          <div class="pbi-card-header">
-            <span class="pbi-card-num">// 01</span>
-            <h3 class="pbi-card-title">SALES &amp; BUSINESS INTELLIGENCE DASHBOARD</h3>
-          </div>
-          <p class="pbi-card-desc">
-            Interactive corporate performance dashboard tracking sales channels, gross margin margins, and regional sales distribution. Engineered with multi-layered DAX metrics to enable immediate diagnostic drill-downs by time, product categories, and geographical sales territories.
-          </p>
-          <div class="pbi-card-img-wrap">
-            <img src="./assets/pbi_dashboard_sales.png" alt="Sales and Business Intelligence Power BI Dashboard" class="pbi-card-img">
-          </div>
-        </div>
-
-        <!-- Dashboard 2 -->
-        <div class="pbi-showcase-card">
-          <div class="pbi-card-header">
-            <span class="pbi-card-num">// 02</span>
-            <h3 class="pbi-card-title">CUSTOMER CHURN &amp; RETENTION INTELLIGENCE</h3>
-          </div>
-          <p class="pbi-card-desc">
-            SaaS retention dashboard mapping subscriber cohort analysis, net revenue retention (NRR), and lifetime value (LTV). Integrates risk segmentation metrics to highlight user drop-off triggers, providing customer success teams with dynamic cohorts for preemptive engagement.
-          </p>
-          <div class="pbi-card-img-wrap">
-            <img src="./assets/pbi_dashboard_churn.png" alt="Customer Churn and Retention Power BI Dashboard" class="pbi-card-img">
-          </div>
-        </div>
-
       </div>
     </div>
   </div>

@@ -334,108 +334,110 @@ if (heroC) {
 
 /* ═══ ABOUT MINI CHART ═══ */
 const ac = document.getElementById('aboutChart');
-const aX = ac.getContext('2d');
-function resizeAbout() {
-  ac.width = ac.offsetWidth * 2;
-  ac.height = ac.offsetHeight * 2;
-  aX.setTransform(1, 0, 0, 1, 0, 0);
-  aX.scale(2, 2);
-}
-resizeAbout();
-window.addEventListener('resize', resizeAbout);
+if (ac) {
+  const aX = ac.getContext('2d');
+  function resizeAbout() {
+    ac.width = ac.offsetWidth * 2;
+    ac.height = ac.offsetHeight * 2;
+    aX.setTransform(1, 0, 0, 1, 0, 0);
+    aX.scale(2, 2);
+  }
+  resizeAbout();
+  window.addEventListener('resize', resizeAbout);
 
-let act = 0;
-const scData = [];
-for (let i = 0; i < 60; i++) {
-  const nx = Math.random();
-  const ny = nx * 0.7 + (Math.random() * 0.3);
-  scData.push({
-    x: nx,
-    y: ny,
-    sz: 1 + Math.random() * 2.5,
-    pSpeed: 0.02 + Math.random() * 0.04,
-    pOff: Math.random() * Math.PI * 2,
-    col: Math.random() > 0.85 ? 'violet' : (Math.random() > 0.92 ? 'yellow' : 'teal')
-  });
-}
-
-function drawAbout() {
-  if (!isVisible) { requestAnimationFrame(drawAbout); return; }
-  if (ac.width !== ac.offsetWidth * 2) resizeAbout();
-  const W = ac.offsetWidth, H = ac.offsetHeight;
-  aX.clearRect(0, 0, W, H);
-  
-  const padL = 30, padR = 15, padT = 15, padB = 22;
-  const cw = W - padL - padR;
-  const ch = H - padT - padB;
-
-  // Grid
-  aX.font = '8px "Share Tech Mono", monospace';
-  aX.textAlign = 'right';
-  for (let i = 0; i <= 4; i++) {
-    const y = padT + ch - (i / 4) * ch;
-    aX.beginPath();
-    aX.moveTo(padL, y); aX.lineTo(W - padR, y);
-    aX.strokeStyle = i === 0 ? 'rgba(${cTeal},0.5)' : 'rgba(${cTeal},0.07)';
-    aX.lineWidth = i === 0 ? 1 : 0.5;
-    aX.stroke();
-    aX.fillStyle = 'rgba(${cTeal},0.6)';
-    aX.fillText((i*0.25).toFixed(2), padL - 4, y + 3);
+  let act = 0;
+  const scData = [];
+  for (let i = 0; i < 60; i++) {
+    const nx = Math.random();
+    const ny = nx * 0.7 + (Math.random() * 0.3);
+    scData.push({
+      x: nx,
+      y: ny,
+      sz: 1 + Math.random() * 2.5,
+      pSpeed: 0.02 + Math.random() * 0.04,
+      pOff: Math.random() * Math.PI * 2,
+      col: Math.random() > 0.85 ? 'violet' : (Math.random() > 0.92 ? 'yellow' : 'teal')
+    });
   }
 
-  // Trendline
-  aX.beginPath();
-  aX.setLineDash([3, 3]);
-  const ty1 = padT + ch - (0.15) * ch;
-  const ty2 = padT + ch - (0.85) * ch;
-  aX.moveTo(padL, ty1);
-  aX.lineTo(padL + cw, ty2);
-  aX.strokeStyle = 'rgba(${cViolet},0.7)';
-  aX.lineWidth = 1.5;
-  aX.stroke();
-  aX.setLineDash([]);
+  function drawAbout() {
+    if (!isVisible) { requestAnimationFrame(drawAbout); return; }
+    if (ac.width !== ac.offsetWidth * 2) resizeAbout();
+    const W = ac.offsetWidth, H = ac.offsetHeight;
+    aX.clearRect(0, 0, W, H);
+    
+    const padL = 30, padR = 15, padT = 15, padB = 22;
+    const cw = W - padL - padR;
+    const ch = H - padT - padB;
 
-  // Scatter points
-  scData.forEach((p, i) => {
-    const px = padL + p.x * cw;
-    const py = padT + ch - p.y * ch;
-    const pulse = Math.sin(act * p.pSpeed + p.pOff) * 0.5 + 0.5; // 0 to 1
-    const r = p.sz + pulse * 1.5;
-    
-    aX.beginPath();
-    aX.arc(px, py, r, 0, Math.PI * 2);
-    let fill = `rgba(${cTeal},${0.3 + pulse * 0.5})`;
-    if (p.col === 'violet') fill = `rgba(${cViolet},${0.4 + pulse * 0.6})`;
-    else if (p.col === 'yellow') fill = `rgba(${cYellow},${0.5 + pulse * 0.5})`;
-    
-    aX.fillStyle = fill;
-    aX.fill();
-    
-    if (pulse > 0.8) {
-      aX.shadowBlur = 8;
-      aX.shadowColor = p.col === 'violet' ? hexViolet : (p.col === 'yellow' ? hexYellow : hexTeal);
-      aX.fill();
-      aX.shadowBlur = 0;
+    // Grid
+    aX.font = '8px "Share Tech Mono", monospace';
+    aX.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+      const y = padT + ch - (i / 4) * ch;
+      aX.beginPath();
+      aX.moveTo(padL, y); aX.lineTo(W - padR, y);
+      aX.strokeStyle = i === 0 ? `rgba(${cTeal},0.5)` : `rgba(${cTeal},0.07)`;
+      aX.lineWidth = i === 0 ? 1 : 0.5;
+      aX.stroke();
+      aX.fillStyle = `rgba(${cTeal},0.6)`;
+      aX.fillText((i*0.25).toFixed(2), padL - 4, y + 3);
     }
-  });
 
-  // X labels
-  aX.fillStyle = 'rgba(${cTeal},0.55)';
-  aX.textAlign = 'center';
-  for(let i=0; i<=4; i++){
-    const x = padL + (i/4) * cw;
-    aX.fillText((i*0.25).toFixed(2), x, padT + ch + 13);
+    // Trendline
+    aX.beginPath();
+    aX.setLineDash([3, 3]);
+    const ty1 = padT + ch - (0.15) * ch;
+    const ty2 = padT + ch - (0.85) * ch;
+    aX.moveTo(padL, ty1);
+    aX.lineTo(padL + cw, ty2);
+    aX.strokeStyle = `rgba(${cViolet},0.7)`;
+    aX.lineWidth = 1.5;
+    aX.stroke();
+    aX.setLineDash([]);
+
+    // Scatter points
+    scData.forEach((p, i) => {
+      const px = padL + p.x * cw;
+      const py = padT + ch - p.y * ch;
+      const pulse = Math.sin(act * p.pSpeed + p.pOff) * 0.5 + 0.5; // 0 to 1
+      const r = p.sz + pulse * 1.5;
+      
+      aX.beginPath();
+      aX.arc(px, py, r, 0, Math.PI * 2);
+      let fill = `rgba(${cTeal},${0.3 + pulse * 0.5})`;
+      if (p.col === 'violet') fill = `rgba(${cViolet},${0.4 + pulse * 0.6})`;
+      else if (p.col === 'yellow') fill = `rgba(${cYellow},${0.5 + pulse * 0.5})`;
+      
+      aX.fillStyle = fill;
+      aX.fill();
+      
+      if (pulse > 0.8) {
+        aX.shadowBlur = 8;
+        aX.shadowColor = p.col === 'violet' ? hexViolet : (p.col === 'yellow' ? hexYellow : hexTeal);
+        aX.fill();
+        aX.shadowBlur = 0;
+      }
+    });
+
+    // X labels
+    aX.fillStyle = `rgba(${cTeal},0.55)`;
+    aX.textAlign = 'center';
+    for(let i=0; i<=4; i++){
+      const x = padL + (i/4) * cw;
+      aX.fillText((i*0.25).toFixed(2), x, padT + ch + 13);
+    }
+
+    // Trendline label
+    aX.fillStyle = `rgba(${cViolet},0.85)`;
+    aX.font = '8px "Share Tech Mono", monospace';
+    aX.fillText('R² = 0.87', W - padR - 25, ty2 - 8);
+
+    act += 1;
+    requestAnimationFrame(drawAbout);
   }
-
-  // Trendline label
-  aX.fillStyle = 'rgba(${cViolet},0.85)';
-  aX.font = '8px "Share Tech Mono", monospace';
-  aX.fillText('R² = 0.87', W - padR - 25, ty2 - 8);
-
-  act += 1;
-  requestAnimationFrame(drawAbout);
+  drawAbout();
 }
-drawAbout();
 
 /* ═══ DATA ═══ */
 const skills = [
@@ -459,9 +461,11 @@ const skills = [
   {name:'Autodesk Maya',icon:'💠',cat:'Creative'},
 ];
 const sg = document.getElementById('skillsGrid');
-skills.forEach(s => {
-  sg.innerHTML += `<div class="sk" data-cat="${s.cat}"><div class="sk-icon">${s.icon}</div><div class="sk-name">${s.name}</div><div class="sk-cat">${s.cat}</div></div>`;
-});
+if (sg) {
+  skills.forEach(s => {
+    sg.innerHTML += `<div class="sk" data-cat="${s.cat}"><div class="sk-icon">${s.icon}</div><div class="sk-name">${s.name}</div><div class="sk-cat">${s.cat}</div></div>`;
+  });
+}
 
 const langs = [
   {flag:'🇮🇹', name:'Italian', level:'NATIVE', cls:'native'},
@@ -470,9 +474,11 @@ const langs = [
   {flag:'🇪🇸', name:'Spanish', level:'A1', cls:'a1'},
 ];
 const lr = document.getElementById('langRow');
-langs.forEach(l => {
-  lr.innerHTML += `<div class="lang"><span class="lang-flag">${l.flag}</span><span class="lang-name">${l.name}</span><span class="lang-level ${l.cls}">${l.level}</span></div>`;
-});
+if (lr) {
+  langs.forEach(l => {
+    lr.innerHTML += `<div class="lang"><span class="lang-flag">${l.flag}</span><span class="lang-name">${l.name}</span><span class="lang-level ${l.cls}">${l.level}</span></div>`;
+  });
+}
 
 const certs = [
   {name:'Boolean — Master in Data Analytics', s:'done', link:'certModal'},
@@ -480,26 +486,28 @@ const certs = [
   {name:'Microsoft PL-300 — Power BI Data Analyst', s:'wip', link:null},
 ];
 const cr = document.getElementById('certsRow');
-certs.forEach(c => {
-  if (c.link === 'certModal') {
-    cr.innerHTML += `<div class="cert ${c.s} clickable" onclick="openModal('certModal')">
-      <div class="cert-st ${c.s==='done'?'d':'w'}">${c.s==='done'?'● Completed':'◌ In progress'}</div>
-      <div class="cert-nm">${c.name}</div>
-      <div class="cert-link">View Certificate ↗</div>
-    </div>`;
-  } else if (c.link) {
-    cr.innerHTML += `<a class="cert ${c.s} clickable" href="${c.link}" target="_blank" rel="noopener">
-      <div class="cert-st ${c.s==='done'?'d':'w'}">${c.s==='done'?'● Completed':'◌ In progress'}</div>
-      <div class="cert-nm">${c.name}</div>
-      <div class="cert-link">View Certificate ↗</div>
-    </a>`;
-  } else {
-    cr.innerHTML += `<div class="cert ${c.s}">
-      <div class="cert-st ${c.s==='done'?'d':'w'}">${c.s==='done'?'● Completed':'◌ In progress'}</div>
-      <div class="cert-nm">${c.name}</div>
-    </div>`;
-  }
-});
+if (cr) {
+  certs.forEach(c => {
+    if (c.link === 'certModal') {
+      cr.innerHTML += `<div class="cert ${c.s} clickable" onclick="openModal('certModal')">
+        <div class="cert-st ${c.s==='done'?'d':'w'}">${c.s==='done'?'● Completed':'◌ In progress'}</div>
+        <div class="cert-nm">${c.name}</div>
+        <div class="cert-link">View Certificate ↗</div>
+      </div>`;
+    } else if (c.link) {
+      cr.innerHTML += `<a class="cert ${c.s} clickable" href="${c.link}" target="_blank" rel="noopener">
+        <div class="cert-st ${c.s==='done'?'d':'w'}">${c.s==='done'?'● Completed':'◌ In progress'}</div>
+        <div class="cert-nm">${c.name}</div>
+        <div class="cert-link">View Certificate ↗</div>
+      </a>`;
+    } else {
+      cr.innerHTML += `<div class="cert ${c.s}">
+        <div class="cert-st ${c.s==='done'?'d':'w'}">${c.s==='done'?'● Completed':'◌ In progress'}</div>
+        <div class="cert-nm">${c.name}</div>
+      </div>`;
+    }
+  });
+}
 
 const projects = [
   {
@@ -558,35 +566,37 @@ const projects = [
   },
 ];
 const pg = document.getElementById('projectsGrid');
-projects.forEach(p => {
-  let badge = '';
-  if (p.done) badge = ` <span class="proj-done">DONE</span>`;
-  if (p.wip) badge = ` <span class="proj-wip">WIP</span>`;
-  if (p.bonus) badge = ` <span class="proj-bonus">BONUS</span>`;
-  let links = '';
-  if (p.notion && p.github) {
-    links = `<a href="${p.notion}" target="_blank" rel="noopener">View on Notion ↗</a><span class="sep">|</span><a class="gh" href="${p.github}" target="_blank" rel="noopener">GitHub ↗</a>`;
-  } else if (p.github) {
-    links = `<a class="gh" href="${p.github}" target="_blank" rel="noopener">View on GitHub ↗</a>`;
-  } else if (p.notion) {
-    links = `<a href="${p.notion}" target="_blank" rel="noopener">View on Notion ↗</a>`;
-  }
-  pg.innerHTML += `
-  <div class="proj">
-    <div class="proj-img ${p.fallback}">
-      <img src="${p.img}" alt="${p.tag}" onerror="this.style.display='none';">
-      <div class="proj-img-overlay"></div>
-      <div class="proj-img-tag">${p.tag}</div>
-    </div>
-    <div class="proj-body">
-      <div class="proj-num glitch-hover" data-text="// ${p.num}">// ${p.num}${badge}</div>
-      <div class="proj-title">${p.title}</div>
-      <p class="proj-desc">${p.desc}</p>
-      <div class="proj-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
-      <div class="proj-links">${links}</div>
-    </div>
-  </div>`;
-});
+if (pg) {
+  projects.forEach(p => {
+    let badge = '';
+    if (p.done) badge = ` <span class="proj-done">DONE</span>`;
+    if (p.wip) badge = ` <span class="proj-wip">WIP</span>`;
+    if (p.bonus) badge = ` <span class="proj-bonus">BONUS</span>`;
+    let links = '';
+    if (p.notion && p.github) {
+      links = `<a href="${p.notion}" target="_blank" rel="noopener">View on Notion ↗</a><span class="sep">|</span><a class="gh" href="${p.github}" target="_blank" rel="noopener">GitHub ↗</a>`;
+    } else if (p.github) {
+      links = `<a class="gh" href="${p.github}" target="_blank" rel="noopener">View on GitHub ↗</a>`;
+    } else if (p.notion) {
+      links = `<a href="${p.notion}" target="_blank" rel="noopener">View on Notion ↗</a>`;
+    }
+    pg.innerHTML += `
+    <div class="proj">
+      <div class="proj-img ${p.fallback}">
+        <img src="${p.img}" alt="${p.tag}" onerror="this.style.display='none';">
+        <div class="proj-img-overlay"></div>
+        <div class="proj-img-tag">${p.tag}</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-num glitch-hover" data-text="// ${p.num}">// ${p.num}${badge}</div>
+        <div class="proj-title">${p.title}</div>
+        <p class="proj-desc">${p.desc}</p>
+        <div class="proj-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div class="proj-links">${links}</div>
+      </div>
+    </div>`;
+  });
+}
 
 /* NAV */
 function goTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
