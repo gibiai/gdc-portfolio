@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Power BI Dashboards // GDC</title>
+  <meta name="description" content="Power BI Dashboards by Gabriele De Carlo — Data Analyst & Visual Storyteller." />
+  <meta name="theme-color" content="#020a0e" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #020a0e;
+      --bg2:       #050f14;
+      --bg3:       #071318;
+      --border:    rgba(0,255,200,0.15);
+      --neon:      #00ffc8;
+      --neon2:     #00c8ff;
+      --neon-dim:  rgba(0,255,200,0.06);
+      --text:      #c8dde8;
+      --text-dim:  #4a6a7a;
+      --red:       #ff3a5c;
+      --mono:      'Space Mono', monospace;
+      --sans:      'Rajdhani', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── SCANLINE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(2,10,14,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-status {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+    }
+    .nav-status span { color: var(--neon); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      transition: color .2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--neon); }
+
+    /* ── HERO HEADER ── */
+    .page-header {
+      margin-top: 52px;
+      padding: 5rem 2rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon), transparent);
+    }
+
+    .header-tag {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+    }
+    .header-tag span { color: var(--neon); }
+
+    .page-header h1 {
+      font-family: var(--sans);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: #fff;
+    }
+
+    .page-header h1 em {
+      font-style: normal;
+      color: var(--neon);
+      display: block;
+    }
+
+    .header-desc {
+      margin-top: 1.2rem;
+      color: var(--text-dim);
+      font-size: 12px;
+      max-width: 540px;
+      line-height: 1.8;
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2rem;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .header-meta span { color: var(--neon); }
+
+    /* ── GRID GLOW BG ── */
+    .grid-bg {
+      position: absolute;
+      top: 0; right: 0;
+      width: 50%;
+      height: 100%;
+      background:
+        linear-gradient(rgba(0,255,200,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,200,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: linear-gradient(to left, rgba(0,0,0,0.4), transparent);
+      pointer-events: none;
+    }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── DASHBOARD CARD ── */
+    .dashboard-card {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      margin-bottom: 3rem;
+      position: relative;
+      transition: border-color .3s, box-shadow .3s;
+    }
+
+    .dashboard-card:hover {
+      border-color: rgba(0,255,200,0.35);
+      box-shadow: 0 0 40px rgba(0,255,200,0.05), inset 0 0 40px rgba(0,255,200,0.02);
+    }
+
+    /* card top bar */
+    .card-header {
+      padding: 1.2rem 1.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: var(--bg3);
+    }
+
+    .card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .card-index {
+      font-size: 10px;
+      color: var(--neon);
+      letter-spacing: 0.2em;
+      opacity: 0.7;
+      min-width: 28px;
+    }
+
+    .card-title {
+      font-family: var(--sans);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.04em;
+    }
+
+    .card-badges {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      background: rgba(0,255,200,0.03);
+    }
+
+    .badge.wip {
+      border-color: rgba(255,58,92,0.3);
+      color: var(--red);
+      background: rgba(255,58,92,0.04);
+    }
+
+    /* toggle / fullscreen btn */
+    .card-actions {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+    }
+
+    .btn-icon {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-icon:hover {
+      border-color: var(--neon);
+      color: var(--neon);
+    }
+
+    /* card body — embed */
+    .card-body {
+      position: relative;
+      background: #000;
+    }
+
+    .embed-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+    }
+
+    .embed-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* placeholder for coming soon */
+    .embed-placeholder {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .embed-placeholder-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .placeholder-label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+    }
+
+    .placeholder-title {
+      font-family: var(--sans);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      opacity: 0.4;
+    }
+
+    .placeholder-bar {
+      width: 60px;
+      height: 2px;
+      background: var(--border);
+    }
+
+    /* card footer */
+    .card-footer {
+      padding: .8rem 1.6rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-dim);
+      background: var(--bg3);
+    }
+
+    .card-footer-status {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--neon);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .dot.wip { background: var(--red); }
+    .dot.soon { background: var(--text-dim); animation: none; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .3; }
+    }
+
+    .fullscreen-link {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      transition: color .2s;
+    }
+    .fullscreen-link:hover { color: var(--neon); }
+
+    /* ── COMING SOON CARD ── */
+    .card-coming-soon .card-header {
+      border-bottom-color: rgba(255,255,255,0.05);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+    }
+    footer a { color: var(--neon); text-decoration: none; }
+
+    /* ── FULLSCREEN MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2,10,14,0.97);
+      z-index: 9000;
+      flex-direction: column;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-topbar {
+      height: 48px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      flex-shrink: 0;
+      background: var(--bg3);
+    }
+
+    .modal-title {
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .modal-close {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 12px;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      transition: all .2s;
+    }
+    .modal-close:hover { border-color: var(--red); color: var(--red); }
+
+    .modal-body {
+      flex: 1;
+      position: relative;
+    }
+    .modal-body iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .card-badges { display: none; }
+      .header-meta { flex-direction: column; gap: .5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-status">SYS::ONLINE // GDC_PORTFOLIO v6.0 // <span>LISBON.PT</span> // UTC+1</div>
+    <ul class="nav-links">
+      <li><a href="index.html">00 / Home</a></li>
+      <li><a href="index.html#about">01 / About</a></li>
+      <li><a href="index.html#skills">02 / Skills</a></li>
+      <li><a href="index.html#projects">03 / Projects</a></li>
+      <li><a href="powerbi.html" class="active">04 / Power BI</a></li>
+      <li><a href="index.html#contact">05 / Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="grid-bg"></div>
+    <div class="header-tag">/ 04 <span>power_bi.dashboards</span></div>
+    <h1>POWER BI<em>DASHBOARDS</em></h1>
+    <p class="header-desc">
+      Interactive dashboards built with Microsoft Power BI. Each report explores a real-world dataset — from climate attitudes to crime economics — with a focus on clarity, storytelling, and actionable insight.
+    </p>
+    <div class="header-meta">
+      <div>TOOL <span>Microsoft Power BI</span></div>
+      <div>DASHBOARDS <span>3 live · 1 WIP · 1 coming soon</span></div>
+      <div>LAST UPDATE <span>2026</span></div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <div class="section-label">// DASHBOARD_LOG — PUBLISHED</div>
+
+    <!-- ── 01 European Climate Attitudes ── -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <span class="card-index">01</span>
+          <span class="card-title">European Climate Attitudes</span>
+          <div class="card-badges">
+            <span class="badge">SURVEY DATA</span>
+            <span class="badge">DEMOGRAPHICS</span>
+            <span class="badge">EU</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-icon" onclick="openModal('European Climate Attitudes','https://app.powerbi.com/view?r=eyJrIjoiZmUzZThjZTItY2IwMy00ZTZlLTkyNDktZTc4ZjU3OGZjMzcwIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9')">[ FULLSCREEN ]</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="embed-wrapper">
+          <iframe
+            title="European Climate Attitudes"
+            src="https://app.powerbi.com/view?r=eyJrIjoiZmUzZThjZTItY2IwMy00ZTZlLTkyNDktZTc4ZjU3OGZjMzcwIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-footer-status">
+          <div class="dot"></div>
+          <span>LIVE</span>
+        </div>
+        <a class="fullscreen-link" href="https://app.powerbi.com/view?r=eyJrIjoiZmUzZThjZTItY2IwMy00ZTZlLTkyNDktZTc4ZjU3OGZjMzcwIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9" target="_blank" rel="noopener">↗ OPEN IN POWER BI</a>
+      </div>
+    </div>
+
+    <!-- ── 02 Crime Economy Analysis ── -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <span class="card-index">02</span>
+          <span class="card-title">Crime Economy Analysis</span>
+          <div class="card-badges">
+            <span class="badge">ECONOMICS</span>
+            <span class="badge">CRIME STATS</span>
+            <span class="badge">CORRELATION</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-icon" onclick="openModal('Crime Economy Analysis','https://app.powerbi.com/view?r=eyJrIjoiNGE3YmRmOTYtNzEwMC00YjFiLWEyNmQtZTI1OGUyM2RjMGRiIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9&pageName=371c88b3c4db8907703d')">[ FULLSCREEN ]</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="embed-wrapper">
+          <iframe
+            title="Crime Economy Analysis"
+            src="https://app.powerbi.com/view?r=eyJrIjoiNGE3YmRmOTYtNzEwMC00YjFiLWEyNmQtZTI1OGUyM2RjMGRiIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9&pageName=371c88b3c4db8907703d"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-footer-status">
+          <div class="dot"></div>
+          <span>LIVE</span>
+        </div>
+        <a class="fullscreen-link" href="https://app.powerbi.com/view?r=eyJrIjoiNGE3YmRmOTYtNzEwMC00YjFiLWEyNmQtZTI1OGUyM2RjMGRiIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9&pageName=371c88b3c4db8907703d" target="_blank" rel="noopener">↗ OPEN IN POWER BI</a>
+      </div>
+    </div>
+
+    <!-- ── 03 Customer Churn Analysis (WIP) ── -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <span class="card-index">03</span>
+          <span class="card-title">Customer Churn Analysis</span>
+          <div class="card-badges">
+            <span class="badge">BUSINESS</span>
+            <span class="badge">ML PREP</span>
+            <span class="badge wip">WIP</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-icon" onclick="openModal('Customer Churn Analysis','https://app.powerbi.com/view?r=eyJrIjoiZWU3MTRiOTYtZjk2OS00NDAwLThmYTctNzgzNWY0MjI5Zjc0IiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9')">[ FULLSCREEN ]</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="embed-wrapper">
+          <iframe
+            title="Customer Churn Analysis"
+            src="https://app.powerbi.com/view?r=eyJrIjoiZWU3MTRiOTYtZjk2OS00NDAwLThmYTctNzgzNWY0MjI5Zjc0IiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-footer-status">
+          <div class="dot wip"></div>
+          <span>WORK IN PROGRESS</span>
+        </div>
+        <a class="fullscreen-link" href="https://app.powerbi.com/view?r=eyJrIjoiZWU3MTRiOTYtZjk2OS00NDAwLThmYTctNzgzNWY0MjI5Zjc0IiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9" target="_blank" rel="noopener">↗ OPEN IN POWER BI</a>
+      </div>
+    </div>
+
+    <div class="section-label">// DASHBOARD_LOG — INCOMING</div>
+
+    <!-- ── 04 AI Jobs Market Analysis (Coming Soon) ── -->
+    <div class="dashboard-card card-coming-soon">
+      <div class="card-header">
+        <div class="card-header-left">
+          <span class="card-index">04</span>
+          <span class="card-title">AI Jobs Market Analysis</span>
+          <div class="card-badges">
+            <span class="badge">AI / ML</span>
+            <span class="badge">LABOR MARKET</span>
+            <span class="badge wip">COMING SOON</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="embed-placeholder">
+          <div class="embed-placeholder-inner">
+            <div class="placeholder-bar"></div>
+            <div class="placeholder-label">// DASHBOARD IN DEVELOPMENT</div>
+            <div class="placeholder-title">AI JOBS MARKET</div>
+            <div class="placeholder-label">ETA — 2026</div>
+            <div class="placeholder-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-footer-status">
+          <div class="dot soon"></div>
+          <span>COMING SOON</span>
+        </div>
+        <span style="font-size:10px; color:var(--text-dim);">/ stay tuned</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>© 2026 // GABRIELE DE CARLO — DATA ANALYST PORTFOLIO</div>
+    <div style="margin-top:.4rem;">Built with curiosity, deployed on Vercel. &nbsp;·&nbsp; <a href="index.html">← Back to Portfolio</a></div>
+  </footer>
+
+  <!-- FULLSCREEN MODAL -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-topbar">
+      <span class="modal-title" id="modal-title">Dashboard</span>
+      <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+    </div>
+    <div class="modal-body">
+      <iframe id="modal-iframe" src="" title="Power BI Dashboard" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script>
+    function openModal(title, src) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-iframe').src = src;
+      document.getElementById('modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+      document.getElementById('modal-iframe').src = '';
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>
