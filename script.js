@@ -475,13 +475,19 @@ langs.forEach(l => {
 });
 
 const certs = [
-  {name:'Boolean — Master in Data Analytics', s:'done', link:'https://valuable-pullover-8a2.notion.site/Boolean-Master-in-Data-Analytics-33a02b5de78a80d0aed1d552533a1f69'},
+  {name:'Boolean — Master in Data Analytics', s:'done', link:'certModal'},
   {name:'IBM Data Analyst Professional Certificate', s:'wip', link:null},
   {name:'Microsoft PL-300 — Power BI Data Analyst', s:'wip', link:null},
 ];
 const cr = document.getElementById('certsRow');
 certs.forEach(c => {
-  if (c.link) {
+  if (c.link === 'certModal') {
+    cr.innerHTML += `<div class="cert ${c.s} clickable" onclick="openModal('certModal')">
+      <div class="cert-st ${c.s==='done'?'d':'w'}">${c.s==='done'?'● Completed':'◌ In progress'}</div>
+      <div class="cert-nm">${c.name}</div>
+      <div class="cert-link">View Certificate ↗</div>
+    </div>`;
+  } else if (c.link) {
     cr.innerHTML += `<a class="cert ${c.s} clickable" href="${c.link}" target="_blank" rel="noopener">
       <div class="cert-st ${c.s==='done'?'d':'w'}">${c.s==='done'?'● Completed':'◌ In progress'}</div>
       <div class="cert-nm">${c.name}</div>
@@ -502,25 +508,25 @@ const projects = [
     title:'ITALY CRIME &<br>ECONOMY ANALYSIS',
     desc:'Crime trends across Italian regions 2018–2023. Correlations between unemployment, GDP per capita and criminal activity using ISTAT and Eurostat data.',
     tags:['Python','Pandas','SQL','Data Viz'],
-    notion:'https://valuable-pullover-8a2.notion.site/Italy-Crime-Economy-Analysis-beb02b5de78a8396a65c01cdce49f99e',
+    notion:null,
     github:'https://github.com/gibiai/crime_economy_italy_analysis'
   },
   {
-    num:'002', wip:true, bonus:false, done:false,
+    num:'002', wip:false, bonus:false, done:true,
     img:'./assets/ai.png', fallback:'fallback-ai', tag:'AI // SALARY',
     title:'AI JOBS MARKET &<br>SALARY PREDICTION',
     desc:"Analysis of AI's growing influence across industries, tracking adoption rates and strategic importance in the global market. ML salary prediction model.",
     tags:['Machine Learning','Python','Scikit-learn'],
-    notion:'https://valuable-pullover-8a2.notion.site/wip-AI-Jobs-Market-Analysis-Salary-Prediction-33302b5de78a80f0be7bc586b717dd64',
+    notion:null,
     github:'https://github.com/gibiai/AI_Labor_Market_Impact_Analysis_2020-2024'
   },
   {
-    num:'003', wip:true, bonus:false, done:false,
+    num:'003', wip:false, bonus:false, done:true,
     img:'./assets/churn.png', fallback:'fallback-churn', tag:'SAAS // RETENTION',
     title:'CUSTOMER CHURN<br>ANALYSIS',
     desc:'Predictive modeling for a subscription SaaS. Identifying churn drivers, detecting at-risk users, optimizing retention to increase lifetime value.',
     tags:['XGBoost','Python','Power BI','SQL'],
-    notion:'https://valuable-pullover-8a2.notion.site/wip-Customer-Churn-Analysis-33302b5de78a80cbadf2e87338375016',
+    notion:null,
     github:'https://github.com/gibiai/Customer_Churn_Analysis_Retention_Strategy-Subscription_Business_2025'
   },
   {
@@ -540,6 +546,15 @@ const projects = [
     tags:['Python','Pandas','Matplotlib','OOP'],
     notion:null,
     github:'https://github.com/gibiai/DepositoPython_De_Carlo/tree/main/Venerdi%2008%3A05'
+  },
+  {
+    num:'006', wip:false, bonus:true, done:true,
+    img:'./assets/velocita.png', fallback:'fallback-velocita', tag:'BIKE-SHARING // ANALYTICS',
+    title:'VELOCITTÀ ANALYTICS // CAPSTONE',
+    desc:'End-to-end data analysis system for VeloCittà, an Italian bike-sharing startup operating in Milan, Rome, and Turin. Built as a capstone project covering object-oriented programming, SQL querying, NumPy numerical analysis, Pandas data processing, and Matplotlib/Seaborn visualization.',
+    tags:['Python','SQL','NumPy','Pandas','Matplotlib','Seaborn','OOP'],
+    notion:null,
+    github:'https://github.com/gibiai/VeloCitta_Analytics'
   },
 ];
 const pg = document.getElementById('projectsGrid');
@@ -608,54 +623,29 @@ revealElements.forEach((el) => {
   observer.observe(el);
 });
 
-/* ═══ SOUND SYSTEM ═══ */
-let isSoundEnabled = false;
-const hoverSnd = new Audio('./assets/hover.mp3');
-const clickSnd = new Audio('./assets/click.wav');
-const glitchSnd = new Audio('./assets/glitch.mp3');
-hoverSnd.volume = 0.15;
-clickSnd.volume = 0.3;
-glitchSnd.volume = 0.1; // Il glitch può essere fastidioso se troppo alto!
-
-function toggleSound() {
-  isSoundEnabled = !isSoundEnabled;
-  document.getElementById('soundToggle').innerText = isSoundEnabled ? '[ SOUND: ON ]' : '[ SOUND: OFF ]';
-  if (isSoundEnabled) {
-    clickSnd.currentTime = 0;
-    clickSnd.play().catch(e => console.log('Audio error:', e));
+/* ═══ MODAL CONTROLS ═══ */
+function openModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevents background scrolling
   }
 }
 
-function playHover() {
-  if (!isSoundEnabled) return;
-  hoverSnd.currentTime = 0;
-  hoverSnd.play().catch(e => {});
-}
-
-function playClick() {
-  if (!isSoundEnabled) return;
-  clickSnd.currentTime = 0;
-  clickSnd.play().catch(e => {});
-}
-
-function playGlitch(e) {
-  if (!isSoundEnabled) return;
-  // Gli effetti glitch sono gestiti da keyframes gl1 e gl2. Ne triggeriamo solo uno per evitare suoni doppi.
-  if (e.animationName === 'gl1') {
-    glitchSnd.currentTime = 0;
-    glitchSnd.play().catch(e => {});
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
   }
 }
 
-setTimeout(() => {
-  document.querySelectorAll('.btn-p, .btn-o, .theme-btn, .cl, .proj, .nav-links a').forEach(el => {
-    el.addEventListener('mouseenter', playHover);
-    el.addEventListener('click', playClick);
-  });
-  
-  // Sincronizzazione suono glitch con animazione CSS!
-  document.querySelectorAll('.hero-name, .glitch-auto').forEach(el => {
-    el.addEventListener('animationstart', playGlitch);
-    el.addEventListener('animationiteration', playGlitch);
-  });
-}, 500);
+// Close modals on Escape key
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.gdc-modal-overlay').forEach(m => {
+      m.classList.remove('active');
+    });
+    document.body.style.overflow = '';
+  }
+});
