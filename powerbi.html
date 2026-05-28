@@ -1,681 +1,552 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Power BI Dashboards by Gabriele De Carlo — Data Analyst & Visual Storyteller.">
+  <meta name="author" content="Gabriele De Carlo">
+  <meta name="theme-color" content="#020a0e">
+  <meta property="og:title" content="Power BI Dashboards // Gabriele De Carlo">
+  <meta property="og:description" content="Interactive Power BI dashboards — data storytelling by Gabriele De Carlo.">
+  <meta property="og:type" content="website">
   <title>Power BI Dashboards // GDC</title>
-  <meta name="description" content="Power BI Dashboards by Gabriele De Carlo — Data Analyst & Visual Storyteller." />
-  <meta name="theme-color" content="#020a0e" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+  <link rel="stylesheet" href="./style.css">
   <style>
-    /* ── RESET & BASE ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #020a0e;
-      --bg2:       #050f14;
-      --bg3:       #071318;
-      --border:    rgba(0,255,200,0.15);
-      --neon:      #00ffc8;
-      --neon2:     #00c8ff;
-      --neon-dim:  rgba(0,255,200,0.06);
-      --text:      #c8dde8;
-      --text-dim:  #4a6a7a;
-      --red:       #ff3a5c;
-      --mono:      'Space Mono', monospace;
-      --sans:      'Rajdhani', sans-serif;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 13px;
-      line-height: 1.6;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ── SCANLINE OVERLAY ── */
-    body::before {
-      content: '';
+    /* ── FULLSCREEN MODAL (Power BI) ── */
+    #pbiModal {
       position: fixed;
       inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.03) 2px,
-        rgba(0,0,0,0.03) 4px
-      );
-      pointer-events: none;
-      z-index: 9999;
-    }
-
-    /* ── NAVBAR ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
+      background: rgba(2, 10, 14, 0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       z-index: 1000;
-      background: rgba(2,10,14,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      height: 52px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    .nav-status {
-      font-size: 10px;
-      color: var(--text-dim);
+    #pbiModal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .pbi-modal-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(var(--teal-rgb), 0.15);
+      background: rgba(2, 12, 16, 0.98);
+      flex-shrink: 0;
+    }
+    .pbi-modal-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
       letter-spacing: 0.08em;
     }
-    .nav-status span { color: var(--neon); }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      transition: color .2s;
-    }
-    .nav-links a:hover,
-    .nav-links a.active { color: var(--neon); }
-
-    /* ── HERO HEADER ── */
-    .page-header {
-      margin-top: 52px;
-      padding: 5rem 2rem 3rem;
-      border-bottom: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .page-header::after {
-      content: '';
-      position: absolute;
-      bottom: -1px; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--neon), transparent);
-    }
-
-    .header-tag {
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.2em;
-      margin-bottom: 1rem;
-    }
-    .header-tag span { color: var(--neon); }
-
-    .page-header h1 {
-      font-family: var(--sans);
-      font-size: clamp(2.8rem, 6vw, 5rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1;
-      color: #fff;
-    }
-
-    .page-header h1 em {
-      font-style: normal;
-      color: var(--neon);
-      display: block;
-    }
-
-    .header-desc {
-      margin-top: 1.2rem;
-      color: var(--text-dim);
-      font-size: 12px;
-      max-width: 540px;
-      line-height: 1.8;
-    }
-
-    .header-meta {
-      display: flex;
-      gap: 2rem;
-      margin-top: 2rem;
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-    .header-meta span { color: var(--neon); }
-
-    /* ── GRID GLOW BG ── */
-    .grid-bg {
-      position: absolute;
-      top: 0; right: 0;
-      width: 50%;
-      height: 100%;
-      background:
-        linear-gradient(rgba(0,255,200,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,200,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      mask-image: linear-gradient(to left, rgba(0,0,0,0.4), transparent);
-      pointer-events: none;
-    }
-
-    /* ── MAIN CONTENT ── */
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-    }
-
-    /* ── SECTION LABEL ── */
-    .section-label {
-      font-size: 10px;
-      letter-spacing: 0.3em;
-      color: var(--text-dim);
-      margin-bottom: 2.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .section-label::after {
-      content: '';
+    .pbi-modal-body {
       flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    /* ── DASHBOARD CARD ── */
-    .dashboard-card {
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      margin-bottom: 3rem;
       position: relative;
-      transition: border-color .3s, box-shadow .3s;
     }
-
-    .dashboard-card:hover {
-      border-color: rgba(0,255,200,0.35);
-      box-shadow: 0 0 40px rgba(0,255,200,0.05), inset 0 0 40px rgba(0,255,200,0.02);
-    }
-
-    /* card top bar */
-    .card-header {
-      padding: 1.2rem 1.6rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      background: var(--bg3);
-    }
-
-    .card-header-left {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-    }
-
-    .card-index {
-      font-size: 10px;
-      color: var(--neon);
-      letter-spacing: 0.2em;
-      opacity: 0.7;
-      min-width: 28px;
-    }
-
-    .card-title {
-      font-family: var(--sans);
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: #fff;
-      letter-spacing: 0.04em;
-    }
-
-    .card-badges {
-      display: flex;
-      gap: .5rem;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      padding: 2px 8px;
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      background: rgba(0,255,200,0.03);
-    }
-
-    .badge.wip {
-      border-color: rgba(255,58,92,0.3);
-      color: var(--red);
-      background: rgba(255,58,92,0.04);
-    }
-
-    /* toggle / fullscreen btn */
-    .card-actions {
-      display: flex;
-      gap: .6rem;
-      align-items: center;
-    }
-
-    .btn-icon {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      padding: 4px 10px;
-      cursor: pointer;
-      transition: all .2s;
-    }
-    .btn-icon:hover {
-      border-color: var(--neon);
-      color: var(--neon);
-    }
-
-    /* card body — embed */
-    .card-body {
-      position: relative;
-      background: #000;
-    }
-
-    .embed-wrapper {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%; /* 16:9 */
-      overflow: hidden;
-    }
-
-    .embed-wrapper iframe {
+    .pbi-modal-body iframe {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      border: 0;
+      border: none;
+      background: #010609;
     }
 
-    /* placeholder for coming soon */
-    .embed-placeholder {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%;
-      background: var(--bg3);
-      display: flex;
+    /* ── LIVE DOT ── */
+    .pbi-status {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
+      gap: 0.45rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
-
-    .embed-placeholder-inner {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .placeholder-label {
-      font-size: 10px;
-      letter-spacing: 0.3em;
-      color: var(--text-dim);
-    }
-
-    .placeholder-title {
-      font-family: var(--sans);
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-dim);
-      opacity: 0.4;
-    }
-
-    .placeholder-bar {
-      width: 60px;
-      height: 2px;
-      background: var(--border);
-    }
-
-    /* card footer */
-    .card-footer {
-      padding: .8rem 1.6rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 10px;
-      color: var(--text-dim);
-      background: var(--bg3);
-    }
-
-    .card-footer-status {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-    }
-
-    .dot {
-      width: 6px;
-      height: 6px;
+    .pbi-status .dot-live {
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: var(--neon);
-      animation: pulse 2s ease-in-out infinite;
+      background: var(--teal);
+      animation: pp 2s ease infinite;
     }
-
-    .dot.wip { background: var(--red); }
-    .dot.soon { background: var(--text-dim); animation: none; }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .3; }
+    .pbi-status .dot-wip {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--yellow);
+      animation: pp 2s ease infinite;
     }
-
-    .fullscreen-link {
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      transition: color .2s;
+    .pbi-status .dot-soon {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(var(--teal-rgb), 0.3);
     }
-    .fullscreen-link:hover { color: var(--neon); }
+    .pbi-status.live { color: var(--teal); }
+    .pbi-status.wip  { color: var(--yellow); }
+    .pbi-status.soon { color: rgba(var(--teal-rgb), 0.4); }
 
-    /* ── COMING SOON CARD ── */
-    .card-coming-soon .card-header {
-      border-bottom-color: rgba(255,255,255,0.05);
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem;
-      text-align: center;
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.1em;
-    }
-    footer a { color: var(--neon); text-decoration: none; }
-
-    /* ── FULLSCREEN MODAL ── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(2,10,14,0.97);
-      z-index: 9000;
-      flex-direction: column;
-    }
-    .modal-overlay.open { display: flex; }
-
-    .modal-topbar {
-      height: 48px;
-      border-bottom: 1px solid var(--border);
+    /* ── CARD FOOTER ROW ── */
+    .pbi-card-footer {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 0 1.5rem;
-      flex-shrink: 0;
-      background: var(--bg3);
+      align-items: center;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
-
-    .modal-title {
-      font-family: var(--sans);
-      font-size: 1rem;
-      font-weight: 600;
-      color: #fff;
+    .pbi-open-link {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(var(--teal-rgb), 0.6);
+      text-decoration: none;
+      transition: color 0.2s;
     }
+    .pbi-open-link:hover { color: var(--teal); }
 
-    .modal-close {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      font-family: var(--mono);
-      font-size: 11px;
-      padding: 4px 12px;
+    /* ── FULLSCREEN BTN ── */
+    .pbi-fs-btn {
+      background: transparent;
+      border: 1px solid rgba(var(--teal-rgb), 0.35);
+      color: rgba(var(--teal-rgb), 0.7);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      padding: 0.3rem 0.8rem;
       cursor: pointer;
-      letter-spacing: 0.1em;
-      transition: all .2s;
+      text-transform: uppercase;
+      transition: all 0.2s;
     }
-    .modal-close:hover { border-color: var(--red); color: var(--red); }
+    .pbi-fs-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: rgba(var(--teal-rgb), 0.06);
+    }
 
-    .modal-body {
-      flex: 1;
+    /* ── TAGS ROW IN CARD ── */
+    .pbi-tags {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.1rem;
+    }
+
+    /* ── PAGE HEADER ── */
+    .pbi-page-header {
+      padding-top: 6.5rem;
+      padding-bottom: 3rem;
+      padding-left: 2.2rem;
+      padding-right: 2.2rem;
+      border-bottom: 1px solid rgba(var(--teal-rgb), 0.1);
       position: relative;
     }
-    .modal-body iframe {
+    .pbi-page-header::after {
+      content: '';
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    }
+    .pbi-section-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      margin-top: 0.5rem;
+    }
+    .pbi-section-divider span {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: rgba(var(--teal-rgb), 0.5);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .pbi-section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(var(--teal-rgb), 0.12);
     }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .card-badges { display: none; }
-      .header-meta { flex-direction: column; gap: .5rem; }
+    @media (max-width: 900px) {
+      .pbi-page-header {
+        padding-left: 1.3rem;
+        padding-right: 1.3rem;
+      }
+      .pbi-modal-topbar {
+        padding: 1rem 1.3rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
+<!-- ── BACKGROUND (identico a index) ── -->
+<div class="bg-wrap">
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="glow g3"></div>
+  <canvas id="bg-mesh"></canvas>
+  <canvas id="bg-flow"></canvas>
+</div>
+
+<div class="hud-c hud-tl"></div>
+<div class="hud-c hud-tr"></div>
+<div class="hud-c hud-bl"></div>
+<div class="hud-c hud-br"></div>
+<div class="scanlines"></div>
+<div class="stat-bar">SYS::ONLINE // GDC_PORTFOLIO v6.0 // <span class="y">LISBON.PT</span> // UTC+1</div>
+
+<!-- ── MOBILE MENU ── -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobile()"></div>
+<aside class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobile()">✕</button>
+  <a href="./index.html">00 / Home</a>
+  <a href="./index.html#about-sec">01 / About</a>
+  <a href="./index.html#skills-sec">02 / Skills</a>
+  <a href="./index.html#projects-sec">03 / Projects</a>
+  <a href="./powerbi.html" class="active">04 / Power BI</a>
+  <a href="./index.html#contact-sec">05 / Contact</a>
+</aside>
+
+<!-- ── NAV (identico a index) ── -->
+<div class="site">
   <nav>
-    <div class="nav-status">SYS::ONLINE // GDC_PORTFOLIO v6.0 // <span>LISBON.PT</span> // UTC+1</div>
+    <div class="nav-logo"><a href="./index.html" style="text-decoration:none;color:inherit;">GDC<span class="accent">_</span></a></div>
     <ul class="nav-links">
-      <li><a href="index.html">00 / Home</a></li>
-      <li><a href="index.html#about">01 / About</a></li>
-      <li><a href="index.html#skills">02 / Skills</a></li>
-      <li><a href="index.html#projects">03 / Projects</a></li>
-      <li><a href="powerbi.html" class="active">04 / Power BI</a></li>
-      <li><a href="index.html#contact">05 / Contact</a></li>
+      <li><a href="./index.html">00 / Home</a></li>
+      <li><a href="./index.html#about-sec">01 / About</a></li>
+      <li><a href="./index.html#skills-sec">02 / Skills</a></li>
+      <li><a href="./index.html#projects-sec">03 / Projects</a></li>
+      <li><a href="./powerbi.html" class="active">04 / Power BI</a></li>
+      <li><a href="./index.html#contact-sec">05 / Contact</a></li>
     </ul>
+    <div style="display:flex; gap:0.5rem;">
+      <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">[ THEME: NEON ]</button>
+    </div>
+    <button class="menu-btn" onclick="openMobile()" aria-label="menu">☰</button>
   </nav>
 
-  <!-- PAGE HEADER -->
-  <header class="page-header">
-    <div class="grid-bg"></div>
-    <div class="header-tag">/ 04 <span>power_bi.dashboards</span></div>
-    <h1>POWER BI<em>DASHBOARDS</em></h1>
-    <p class="header-desc">
+  <!-- ── PAGE HEADER ── -->
+  <div class="pbi-page-header">
+    <div class="sec-head">
+      <span class="sec-num">/ 04</span>
+      <span class="sec-label">power_bi.dashboards</span>
+    </div>
+    <div class="sec-title glitch-hover" data-text="POWER BI">POWER <span class="accent">BI</span></div>
+    <p style="font-family:'Outfit',sans-serif;font-weight:300;font-size:1rem;color:#e2e8f0;line-height:1.8;max-width:560px;margin-top:1rem;margin-bottom:1.4rem;">
       Interactive dashboards built with Microsoft Power BI. Each report explores a real-world dataset — from climate attitudes to crime economics — with a focus on clarity, storytelling, and actionable insight.
     </p>
-    <div class="header-meta">
-      <div>TOOL <span>Microsoft Power BI</span></div>
-      <div>DASHBOARDS <span>3 live · 1 WIP · 1 coming soon</span></div>
-      <div>LAST UPDATE <span>2026</span></div>
+    <div style="display:flex;gap:1.6rem;flex-wrap:wrap;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(var(--teal-rgb),0.55);">
+      <div>Tool &nbsp;<span style="color:var(--teal);">Microsoft Power BI</span></div>
+      <div>Dashboards &nbsp;<span style="color:var(--teal);">3 live · 1 WIP · 1 coming soon</span></div>
+      <div>Updated &nbsp;<span style="color:var(--teal);">2026</span></div>
     </div>
-  </header>
+  </div>
 
-  <!-- MAIN -->
-  <main>
+  <!-- ── MAIN CONTENT ── -->
+  <div class="pbi-container">
 
-    <div class="section-label">// DASHBOARD_LOG — PUBLISHED</div>
+    <div class="pbi-section-divider"><span>// published</span></div>
 
     <!-- ── 01 European Climate Attitudes ── -->
-    <div class="dashboard-card">
-      <div class="card-header">
-        <div class="card-header-left">
-          <span class="card-index">01</span>
-          <span class="card-title">European Climate Attitudes</span>
-          <div class="card-badges">
-            <span class="badge">SURVEY DATA</span>
-            <span class="badge">DEMOGRAPHICS</span>
-            <span class="badge">EU</span>
-          </div>
+    <div class="pbi-embed-card reveal">
+      <div class="pbi-embed-header">
+        <div class="pbi-embed-title-wrap">
+          <span class="pbi-embed-num">01</span>
+          <span class="pbi-embed-title">European Climate Attitudes</span>
         </div>
-        <div class="card-actions">
-          <button class="btn-icon" onclick="openModal('European Climate Attitudes','https://app.powerbi.com/view?r=eyJrIjoiZmUzZThjZTItY2IwMy00ZTZlLTkyNDktZTc4ZjU3OGZjMzcwIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9')">[ FULLSCREEN ]</button>
-        </div>
+        <button class="pbi-fs-btn" onclick="openPbiModal('European Climate Attitudes','https://app.powerbi.com/view?r=eyJrIjoiZmUzZThjZTItY2IwMy00ZTZlLTkyNDktZTc4ZjU3OGZjMzcwIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9')">[ FULLSCREEN ]</button>
       </div>
-      <div class="card-body">
-        <div class="embed-wrapper">
-          <iframe
-            title="European Climate Attitudes"
-            src="https://app.powerbi.com/view?r=eyJrIjoiZmUzZThjZTItY2IwMy00ZTZlLTkyNDktZTc4ZjU3OGZjMzcwIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9"
-            allowfullscreen>
-          </iframe>
-        </div>
+      <div class="pbi-tags">
+        <span class="tag">Survey Data</span>
+        <span class="tag">Demographics</span>
+        <span class="tag">EU</span>
+        <span class="tag">Power BI</span>
       </div>
-      <div class="card-footer">
-        <div class="card-footer-status">
-          <div class="dot"></div>
-          <span>LIVE</span>
-        </div>
-        <a class="fullscreen-link" href="https://app.powerbi.com/view?r=eyJrIjoiZmUzZThjZTItY2IwMy00ZTZlLTkyNDktZTc4ZjU3OGZjMzcwIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9" target="_blank" rel="noopener">↗ OPEN IN POWER BI</a>
+      <p class="pbi-embed-desc">Analysis of European public opinion on climate change, policies and sustainability — segmented by country, age, and income group.</p>
+      <div class="pbi-iframe-wrapper">
+        <iframe
+          title="European Climate Attitudes"
+          src="https://app.powerbi.com/view?r=eyJrIjoiZmUzZThjZTItY2IwMy00ZTZlLTkyNDktZTc4ZjU3OGZjMzcwIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="pbi-card-footer">
+        <div class="pbi-status live"><div class="dot-live"></div> Live</div>
+        <a class="pbi-open-link" href="https://app.powerbi.com/view?r=eyJrIjoiZmUzZThjZTItY2IwMy00ZTZlLTkyNDktZTc4ZjU3OGZjMzcwIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9" target="_blank" rel="noopener">↗ Open in Power BI</a>
       </div>
     </div>
 
     <!-- ── 02 Crime Economy Analysis ── -->
-    <div class="dashboard-card">
-      <div class="card-header">
-        <div class="card-header-left">
-          <span class="card-index">02</span>
-          <span class="card-title">Crime Economy Analysis</span>
-          <div class="card-badges">
-            <span class="badge">ECONOMICS</span>
-            <span class="badge">CRIME STATS</span>
-            <span class="badge">CORRELATION</span>
-          </div>
+    <div class="pbi-embed-card reveal">
+      <div class="pbi-embed-header">
+        <div class="pbi-embed-title-wrap">
+          <span class="pbi-embed-num">02</span>
+          <span class="pbi-embed-title">Crime Economy Analysis</span>
         </div>
-        <div class="card-actions">
-          <button class="btn-icon" onclick="openModal('Crime Economy Analysis','https://app.powerbi.com/view?r=eyJrIjoiNGE3YmRmOTYtNzEwMC00YjFiLWEyNmQtZTI1OGUyM2RjMGRiIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9&pageName=371c88b3c4db8907703d')">[ FULLSCREEN ]</button>
-        </div>
+        <button class="pbi-fs-btn" onclick="openPbiModal('Crime Economy Analysis','https://app.powerbi.com/view?r=eyJrIjoiNGE3YmRmOTYtNzEwMC00YjFiLWEyNmQtZTI1OGUyM2RjMGRiIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9&pageName=371c88b3c4db8907703d')">[ FULLSCREEN ]</button>
       </div>
-      <div class="card-body">
-        <div class="embed-wrapper">
-          <iframe
-            title="Crime Economy Analysis"
-            src="https://app.powerbi.com/view?r=eyJrIjoiNGE3YmRmOTYtNzEwMC00YjFiLWEyNmQtZTI1OGUyM2RjMGRiIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9&pageName=371c88b3c4db8907703d"
-            allowfullscreen>
-          </iframe>
-        </div>
+      <div class="pbi-tags">
+        <span class="tag">Economics</span>
+        <span class="tag">Crime Stats</span>
+        <span class="tag">Correlation</span>
+        <span class="tag">Power BI</span>
       </div>
-      <div class="card-footer">
-        <div class="card-footer-status">
-          <div class="dot"></div>
-          <span>LIVE</span>
-        </div>
-        <a class="fullscreen-link" href="https://app.powerbi.com/view?r=eyJrIjoiNGE3YmRmOTYtNzEwMC00YjFiLWEyNmQtZTI1OGUyM2RjMGRiIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9&pageName=371c88b3c4db8907703d" target="_blank" rel="noopener">↗ OPEN IN POWER BI</a>
+      <p class="pbi-embed-desc">Correlations between unemployment, GDP per capita and criminal activity in Italian regions 2018–2023, using ISTAT and Eurostat data.</p>
+      <div class="pbi-iframe-wrapper">
+        <iframe
+          title="Crime Economy Analysis"
+          src="https://app.powerbi.com/view?r=eyJrIjoiNGE3YmRmOTYtNzEwMC00YjFiLWEyNmQtZTI1OGUyM2RjMGRiIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9&pageName=371c88b3c4db8907703d"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="pbi-card-footer">
+        <div class="pbi-status live"><div class="dot-live"></div> Live</div>
+        <a class="pbi-open-link" href="https://app.powerbi.com/view?r=eyJrIjoiNGE3YmRmOTYtNzEwMC00YjFiLWEyNmQtZTI1OGUyM2RjMGRiIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9&pageName=371c88b3c4db8907703d" target="_blank" rel="noopener">↗ Open in Power BI</a>
       </div>
     </div>
 
     <!-- ── 03 Customer Churn Analysis (WIP) ── -->
-    <div class="dashboard-card">
-      <div class="card-header">
-        <div class="card-header-left">
-          <span class="card-index">03</span>
-          <span class="card-title">Customer Churn Analysis</span>
-          <div class="card-badges">
-            <span class="badge">BUSINESS</span>
-            <span class="badge">ML PREP</span>
-            <span class="badge wip">WIP</span>
-          </div>
+    <div class="pbi-embed-card reveal">
+      <div class="pbi-embed-header">
+        <div class="pbi-embed-title-wrap">
+          <span class="pbi-embed-num">03</span>
+          <span class="pbi-embed-title">Customer Churn Analysis</span>
+          <span class="pbi-embed-tag">WIP</span>
         </div>
-        <div class="card-actions">
-          <button class="btn-icon" onclick="openModal('Customer Churn Analysis','https://app.powerbi.com/view?r=eyJrIjoiZWU3MTRiOTYtZjk2OS00NDAwLThmYTctNzgzNWY0MjI5Zjc0IiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9')">[ FULLSCREEN ]</button>
-        </div>
+        <button class="pbi-fs-btn" onclick="openPbiModal('Customer Churn Analysis','https://app.powerbi.com/view?r=eyJrIjoiZWU3MTRiOTYtZjk2OS00NDAwLThmYTctNzgzNWY0MjI5Zjc0IiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9')">[ FULLSCREEN ]</button>
       </div>
-      <div class="card-body">
-        <div class="embed-wrapper">
-          <iframe
-            title="Customer Churn Analysis"
-            src="https://app.powerbi.com/view?r=eyJrIjoiZWU3MTRiOTYtZjk2OS00NDAwLThmYTctNzgzNWY0MjI5Zjc0IiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9"
-            allowfullscreen>
-          </iframe>
-        </div>
+      <div class="pbi-tags">
+        <span class="tag">Business</span>
+        <span class="tag">SaaS</span>
+        <span class="tag">Retention</span>
+        <span class="tag">Power BI</span>
       </div>
-      <div class="card-footer">
-        <div class="card-footer-status">
-          <div class="dot wip"></div>
-          <span>WORK IN PROGRESS</span>
-        </div>
-        <a class="fullscreen-link" href="https://app.powerbi.com/view?r=eyJrIjoiZWU3MTRiOTYtZjk2OS00NDAwLThmYTctNzgzNWY0MjI5Zjc0IiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9" target="_blank" rel="noopener">↗ OPEN IN POWER BI</a>
+      <p class="pbi-embed-desc">Predictive modeling for a subscription SaaS. Identifying churn drivers, detecting at-risk users, and optimizing retention to increase lifetime value.</p>
+      <div class="pbi-iframe-wrapper">
+        <iframe
+          title="Customer Churn Analysis"
+          src="https://app.powerbi.com/view?r=eyJrIjoiZWU3MTRiOTYtZjk2OS00NDAwLThmYTctNzgzNWY0MjI5Zjc0IiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="pbi-card-footer">
+        <div class="pbi-status wip"><div class="dot-wip"></div> Work in Progress</div>
+        <a class="pbi-open-link" href="https://app.powerbi.com/view?r=eyJrIjoiZWU3MTRiOTYtZjk2OS00NDAwLThmYTctNzgzNWY0MjI5Zjc0IiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9" target="_blank" rel="noopener">↗ Open in Power BI</a>
       </div>
     </div>
 
-    <div class="section-label">// DASHBOARD_LOG — INCOMING</div>
+    <div class="pbi-section-divider"><span>// incoming</span></div>
 
-    <!-- ── 04 AI Jobs Market Analysis (Coming Soon) ── -->
-    <div class="dashboard-card card-coming-soon">
-      <div class="card-header">
-        <div class="card-header-left">
-          <span class="card-index">04</span>
-          <span class="card-title">AI Jobs Market Analysis</span>
-          <div class="card-badges">
-            <span class="badge">AI / ML</span>
-            <span class="badge">LABOR MARKET</span>
-            <span class="badge wip">COMING SOON</span>
-          </div>
+    <!-- ── 04 AI Jobs Market (Coming Soon) ── -->
+    <div class="pbi-embed-card reveal">
+      <div class="pbi-embed-header">
+        <div class="pbi-embed-title-wrap">
+          <span class="pbi-embed-num">04</span>
+          <span class="pbi-embed-title">AI Jobs Market Analysis</span>
         </div>
       </div>
-      <div class="card-body">
-        <div class="embed-placeholder">
-          <div class="embed-placeholder-inner">
-            <div class="placeholder-bar"></div>
-            <div class="placeholder-label">// DASHBOARD IN DEVELOPMENT</div>
-            <div class="placeholder-title">AI JOBS MARKET</div>
-            <div class="placeholder-label">ETA — 2026</div>
-            <div class="placeholder-bar"></div>
-          </div>
-        </div>
+      <div class="pbi-tags">
+        <span class="tag">AI / ML</span>
+        <span class="tag">Labor Market</span>
+        <span class="tag">Power BI</span>
       </div>
-      <div class="card-footer">
-        <div class="card-footer-status">
-          <div class="dot soon"></div>
-          <span>COMING SOON</span>
-        </div>
-        <span style="font-size:10px; color:var(--text-dim);">/ stay tuned</span>
+      <p class="pbi-embed-desc">Analysis of AI's growing influence on the job market — tracking role trends, salary distributions, and skill demand across industries globally.</p>
+      <div class="pbi-placeholder-box">
+        <div class="pbi-placeholder-icon">📊</div>
+        <div class="pbi-placeholder-text">// Dashboard in development</div>
+        <div class="pbi-placeholder-sub">ETA — 2026 · stay tuned</div>
+      </div>
+      <div class="pbi-card-footer">
+        <div class="pbi-status soon"><div class="dot-soon"></div> Coming Soon</div>
       </div>
     </div>
 
-  </main>
+  </div><!-- /pbi-container -->
 
-  <!-- FOOTER -->
+  <!-- ── FOOTER ── -->
+  <div class="sec-divider"></div>
   <footer>
-    <div>© 2026 // GABRIELE DE CARLO — DATA ANALYST PORTFOLIO</div>
-    <div style="margin-top:.4rem;">Built with curiosity, deployed on Vercel. &nbsp;·&nbsp; <a href="index.html">← Back to Portfolio</a></div>
+    <p>© 2026 // GABRIELE DE CARLO — DATA ANALYST PORTFOLIO</p>
+    <p class="built">Built with curiosity, deployed on Vercel. &nbsp;·&nbsp; <a href="./index.html" style="color:var(--teal);text-decoration:none;">← Back to Portfolio</a></p>
   </footer>
 
-  <!-- FULLSCREEN MODAL -->
-  <div class="modal-overlay" id="modal">
-    <div class="modal-topbar">
-      <span class="modal-title" id="modal-title">Dashboard</span>
-      <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+</div><!-- /site -->
+
+<!-- ── FULLSCREEN MODAL ── -->
+<div id="pbiModal">
+  <div class="pbi-modal-topbar">
+    <div class="gdc-modal-header" style="padding:0;border:none;background:transparent;flex:1;">
+      <span class="sec-label">/ power_bi.fullscreen</span>
+      <span class="pbi-modal-title" id="pbiModalTitle" style="margin:0 1rem;"></span>
     </div>
-    <div class="modal-body">
-      <iframe id="modal-iframe" src="" title="Power BI Dashboard" allowfullscreen></iframe>
-    </div>
+    <button class="gdc-modal-close" onclick="closePbiModal()">[ CLOSE // ✕ ]</button>
   </div>
+  <div class="pbi-modal-body">
+    <iframe id="pbiModalIframe" src="" title="Power BI Dashboard" allowfullscreen></iframe>
+  </div>
+</div>
 
-  <script>
-    function openModal(title, src) {
-      document.getElementById('modal-title').textContent = title;
-      document.getElementById('modal-iframe').src = src;
-      document.getElementById('modal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
+<script>
+  /* ── NAV helpers ── */
+  function openMobile()  { document.getElementById('mobileMenu').classList.add('open');  document.getElementById('mobileOverlay').classList.add('show'); }
+  function closeMobile() { document.getElementById('mobileMenu').classList.remove('open'); document.getElementById('mobileOverlay').classList.remove('show'); }
 
-    function closeModal() {
-      document.getElementById('modal').classList.remove('open');
-      document.getElementById('modal-iframe').src = '';
-      document.body.style.overflow = '';
-    }
+  /* ── Theme toggle ── */
+  function toggleTheme() {
+    document.body.classList.toggle('theme-amber');
+    const isAmber = document.body.classList.contains('theme-amber');
+    document.getElementById('themeToggle').innerText = isAmber ? '[ THEME: AMBER ]' : '[ THEME: NEON ]';
+    if (typeof syncColors === 'function') syncColors();
+  }
 
-    document.getElementById('modal').addEventListener('click', function(e) {
-      if (e.target === this) closeModal();
+  /* ── Power BI fullscreen modal ── */
+  function openPbiModal(title, src) {
+    document.getElementById('pbiModalTitle').textContent = title;
+    document.getElementById('pbiModalIframe').src = src;
+    document.getElementById('pbiModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePbiModal() {
+    document.getElementById('pbiModal').classList.remove('active');
+    document.getElementById('pbiModalIframe').src = '';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('pbiModal').addEventListener('click', function(e) {
+    if (e.target === this) closePbiModal();
+  });
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closePbiModal();
+  });
+
+  /* ── Reveal on scroll ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target);
+      }
     });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeModal();
-    });
-  </script>
+<!-- ── Background animation (riusa lo stesso script di index) ── -->
+<script>
+  /* Minimal background loop for powerbi page */
+  let cTeal = '45,255,213', cViolet = '168,85,247', cYellow = '251,191,36', cRed = '239,68,68';
+  let hexTeal = '#2dffd5', hexViolet = '#a855f7', hexYellow = '#fbbf24';
+
+  function syncColors() {
+    const st = getComputedStyle(document.body);
+    hexTeal   = st.getPropertyValue('--teal').trim();
+    hexViolet = st.getPropertyValue('--violet').trim();
+    hexYellow = st.getPropertyValue('--yellow').trim();
+    const hex2rgb = (hex) => {
+      let h = hex.replace('#', '');
+      if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+      return parseInt(h.substring(0,2),16)+','+parseInt(h.substring(2,4),16)+','+parseInt(h.substring(4,6),16);
+    };
+    cTeal   = hex2rgb(hexTeal);
+    cViolet = hex2rgb(hexViolet);
+    cYellow = hex2rgb(hexYellow);
+    cRed    = hex2rgb(st.getPropertyValue('--red').trim() || '#ef4444');
+  }
+  syncColors();
+
+  let isVisible = true;
+  document.addEventListener('visibilitychange', () => { isVisible = document.visibilityState === 'visible'; });
+
+  const meshC = document.getElementById('bg-mesh');
+  const meshX = meshC.getContext('2d');
+  const flowC = document.getElementById('bg-flow');
+  const flowX = flowC.getContext('2d');
+  let MW, MH, FW, FH;
+  function resize() {
+    MW = meshC.width = meshC.offsetWidth;
+    MH = meshC.height = meshC.offsetHeight;
+    FW = flowC.width = flowC.offsetWidth;
+    FH = flowC.height = flowC.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let t = 0;
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let targetMx = mx, targetMy = my;
+  window.addEventListener('mousemove', (e) => { targetMx = e.clientX; targetMy = e.clientY; });
+
+  function drawMesh() {
+    meshX.clearRect(0, 0, MW, MH);
+    const cols = 24, rows = 18;
+    const cw = MW / (cols - 1), ch = MH / (rows - 1);
+    const pts = [];
+    for (let r = 0; r < rows; r++) {
+      pts[r] = [];
+      for (let c = 0; c < cols; c++) {
+        const wave = Math.sin(c * 0.4 + r * 0.3 + t * 0.6) * 14 + Math.sin(c * 0.18 + t * 0.4) * 10;
+        pts[r][c] = { x: c * cw, y: r * ch + wave };
+      }
+    }
+    for (let r = 0; r < rows - 1; r++) {
+      for (let c = 0; c < cols - 1; c++) {
+        const p1 = pts[r][c], p2 = pts[r][c+1], p3 = pts[r+1][c];
+        const cd = 1 - Math.abs(c / cols - 0.3) * 1.2;
+        const a = 0.025 + cd * 0.05;
+        meshX.strokeStyle = `rgba(${cTeal},${a})`;
+        meshX.lineWidth = 0.4;
+        meshX.beginPath(); meshX.moveTo(p1.x, p1.y); meshX.lineTo(p2.x, p2.y); meshX.lineTo(p3.x, p3.y); meshX.closePath(); meshX.stroke();
+      }
+    }
+    for (let r = 2; r < rows; r += 4) {
+      meshX.beginPath();
+      for (let c = 0; c < cols; c++) { if (c === 0) meshX.moveTo(pts[r][c].x, pts[r][c].y); else meshX.lineTo(pts[r][c].x, pts[r][c].y); }
+      meshX.strokeStyle = `rgba(${cRed},0.12)`; meshX.lineWidth = 0.5; meshX.stroke();
+    }
+  }
+
+  const FCOLS = 60, FROWS = 14;
+  function drawFlow() {
+    flowX.clearRect(0, 0, FW, FH);
+    const cw = FW / (FCOLS - 1);
+    const baseY = FH * 0.6, ch = FH * 0.4;
+    for (let r = 0; r < FROWS; r++) {
+      const rNorm = r / (FROWS - 1);
+      flowX.beginPath();
+      for (let c = 0; c < FCOLS; c++) {
+        const x = c * cw;
+        const y = baseY - Math.sin(c * 0.16 + t * 1.0 + r * 0.3) * 50 * rNorm - Math.sin(c * 0.08 + t * 0.5 + r * 0.15) * 28 * rNorm - rNorm * ch * 0.4;
+        if (c === 0) flowX.moveTo(x, y); else flowX.lineTo(x, y);
+      }
+      const a = 0.03 + rNorm * 0.13;
+      flowX.strokeStyle = r % 4 === 0 ? `rgba(${cViolet},${a * 0.7})` : `rgba(${cTeal},${a})`;
+      flowX.lineWidth = 0.5; flowX.stroke();
+    }
+  }
+
+  function bgLoop() {
+    if (isVisible) {
+      if (meshC.width !== meshC.offsetWidth) resize();
+      mx += (targetMx - mx) * 0.05; my += (targetMy - my) * 0.05;
+      t += 0.008 + (Math.abs(mx - window.innerWidth / 2) / window.innerWidth) * 0.02;
+      drawMesh(); drawFlow();
+    }
+    requestAnimationFrame(bgLoop);
+  }
+  bgLoop();
+</script>
+
 </body>
 </html>
