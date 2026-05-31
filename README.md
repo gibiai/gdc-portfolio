@@ -33,14 +33,14 @@ portfolio/
 ├── script.js         # Canvas loops and interactivity
 ├── README.md
 └── assets/
-├── profile.jpg
-├── crime.png
-├── ai.png
-├── churn.png
-├── gestionale.png
-├── bike_rent.jpeg
-├── bonus.jpg
-└── certificate.pdf
+    ├── profile.jpg
+    ├── crime.png
+    ├── ai.png
+    ├── churn.png
+    ├── gestionale.png
+    ├── bike_rent.jpeg
+    ├── bonus.jpg
+    └── certificate.pdf
 ```
 ## Run Locally
 
