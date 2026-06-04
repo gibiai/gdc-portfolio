@@ -554,7 +554,7 @@ const projects = [
     desc:'Analisi dei rischi e dei modelli di pricing sui portafogli assicurativi sanitari. Identificazione dei fattori chiave dei premi, moltiplicatori dei costi medici e matrici di correlazione tra fumatori, età e BMI.',
     tags:['Power BI','Healthcare','Risk Analysis','DAX'],
     notion:null,
-    github:'https://app.powerbi.com/view?r=eyJrIjoiN2MyNGE3YjQtODM1NS00YTJlLTg0NzMtMWZmOWE2ZmUxOGNmIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9'
+    github:'https://github.com/gibiai/Insurance_Claims_Analysis'
   }
 ];
 const pg = document.getElementById('projectsGrid');
@@ -568,8 +568,7 @@ if (pg) {
     if (p.notion && p.github) {
       links = `<a href="${p.notion}" target="_blank" rel="noopener">View on Notion ↗</a><span class="sep">|</span><a class="gh" href="${p.github}" target="_blank" rel="noopener">GitHub ↗</a>`;
     } else if (p.github) {
-      const linkText = p.github.includes('powerbi.com') ? 'View Dashboard ↗' : 'View on GitHub ↗';
-      links = `<a class="gh" href="${p.github}" target="_blank" rel="noopener">${linkText}</a>`;
+      links = `<a class="gh" href="${p.github}" target="_blank" rel="noopener">View on GitHub ↗</a>`;
     } else if (p.notion) {
       links = `<a href="${p.notion}" target="_blank" rel="noopener">View on Notion ↗</a>`;
     }
