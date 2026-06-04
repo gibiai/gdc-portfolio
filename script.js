@@ -551,7 +551,7 @@ const projects = [
     num:'007', wip:false, bonus:false, done:true,
     img:'./assets/insurance_preview.jpg', fallback:'fallback-insurance', tag:'HEALTHCARE // RISK ANALYSIS',
     title:'INSURANCE HEALTH<br>ANALYTICS',
-    desc:'Analisi dei rischi e dei modelli di pricing sui portafogli assicurativi sanitari. Identificazione dei fattori chiave dei premi, moltiplicatori dei costi medici e matrici di correlazione tra fumatori, età e BMI.',
+    desc:'Risk and pricing model analysis on health insurance portfolios. Identification of key premium drivers, medical cost multipliers, and correlation matrices across smokers, age, and BMI.',
     tags:['Power BI','Healthcare','Risk Analysis','DAX'],
     notion:null,
     github:'https://github.com/gibiai/Insurance_Claims_Analysis'
