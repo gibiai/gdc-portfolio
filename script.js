@@ -186,11 +186,9 @@ if (heroC) {
   window.addEventListener('resize', resizeHero);
 
   let ht = 0;
-  // Wireframe icosahedron-like sphere using parametric points
   const NODES = 80;
   const nodes = [];
   for (let i = 0; i < NODES; i++) {
-    // Fibonacci sphere
     const phi = Math.acos(1 - 2 * (i + 0.5) / NODES);
     const theta = Math.PI * (1 + Math.sqrt(5)) * i;
     nodes.push({
@@ -218,21 +216,17 @@ if (heroC) {
     const mNormX = (mx / window.innerWidth) * 2 - 1;
     const mNormY = (my / window.innerHeight) * 2 - 1;
 
-    // rotation
     const rotY = ht * 0.4 + mNormX * 1.5;
     const rotX = Math.sin(ht * 0.3) * 0.4 + mNormY * 0.8;
 
     const projected = nodes.map(n => {
-      // explode
       const nx = n.x * (1 + explodeForce * 1.5);
       const ny = n.y * (1 + explodeForce * 1.5);
       const nz = n.z * (1 + explodeForce * 1.5);
 
-      // Y rotation
       let x = nx * Math.cos(rotY) - nz * Math.sin(rotY);
       let z = nx * Math.sin(rotY) + nz * Math.cos(rotY);
       let y = ny;
-      // X rotation
       const y2 = y * Math.cos(rotX) - z * Math.sin(rotX);
       const z2 = y * Math.sin(rotX) + z * Math.cos(rotX);
       return {
@@ -242,7 +236,6 @@ if (heroC) {
       };
     });
 
-    // Draw edges between nearby points
     for (let i = 0; i < projected.length; i++) {
       for (let j = i + 1; j < projected.length; j++) {
         const a = projected[i], b = projected[j];
@@ -262,7 +255,6 @@ if (heroC) {
       }
     }
 
-    // Draw nodes
     projected.forEach((p, i) => {
       let alpha = (p.z + 1) / 2;
       alpha = Math.max(0, Math.min(1, alpha));
@@ -283,7 +275,6 @@ if (heroC) {
       }
     });
 
-    // Inner orbital ring
     heroX.beginPath();
     heroX.ellipse(cx, cy, radius * 1.3, radius * 0.25, ht * 0.3, 0, Math.PI * 2);
     heroX.strokeStyle = 'rgba(${cViolet},0.25)';
@@ -296,9 +287,7 @@ if (heroC) {
     heroX.lineWidth = 1;
     heroX.stroke();
 
-    // Floating data labels around
-    heroX.font = '10px "Share Tech Mono", monospace';
-    const dataLabels = [
+    let dataLabels = [
       {txt: '0.94', a: 0.3},
       {txt: '+24.7%', a: 1.2},
       {txt: 'KPI', a: 2.1},
@@ -317,7 +306,6 @@ if (heroC) {
       heroX.fillText(l.txt, x, y);
     });
 
-    // Center label
     heroX.fillStyle = 'rgba(${cTeal},0.7)';
     heroX.font = 'bold 9px Orbitron, monospace';
     heroX.textAlign = 'center';
@@ -370,7 +358,6 @@ if (ac) {
     const cw = W - padL - padR;
     const ch = H - padT - padB;
 
-    // Grid
     aX.font = '8px "Share Tech Mono", monospace';
     aX.textAlign = 'right';
     for (let i = 0; i <= 4; i++) {
@@ -384,7 +371,6 @@ if (ac) {
       aX.fillText((i*0.25).toFixed(2), padL - 4, y + 3);
     }
 
-    // Trendline
     aX.beginPath();
     aX.setLineDash([3, 3]);
     const ty1 = padT + ch - (0.15) * ch;
@@ -396,11 +382,10 @@ if (ac) {
     aX.stroke();
     aX.setLineDash([]);
 
-    // Scatter points
     scData.forEach((p, i) => {
       const px = padL + p.x * cw;
       const py = padT + ch - p.y * ch;
-      const pulse = Math.sin(act * p.pSpeed + p.pOff) * 0.5 + 0.5; // 0 to 1
+      const pulse = Math.sin(act * p.pSpeed + p.pOff) * 0.5 + 0.5;
       const r = p.sz + pulse * 1.5;
       
       aX.beginPath();
@@ -420,7 +405,6 @@ if (ac) {
       }
     });
 
-    // X labels
     aX.fillStyle = `rgba(${cTeal},0.55)`;
     aX.textAlign = 'center';
     for(let i=0; i<=4; i++){
@@ -428,7 +412,6 @@ if (ac) {
       aX.fillText((i*0.25).toFixed(2), x, padT + ch + 13);
     }
 
-    // Trendline label
     aX.fillStyle = `rgba(${cViolet},0.85)`;
     aX.font = '8px "Share Tech Mono", monospace';
     aX.fillText('R² = 0.87', W - padR - 25, ty2 - 8);
@@ -564,6 +547,15 @@ const projects = [
     notion:null,
     github:'https://github.com/gibiai/VeloCitta_Analytics'
   },
+  {
+    num:'007', wip:false, bonus:false, done:true,
+    img:'./assets/insurance_preview.jpg', fallback:'fallback-insurance', tag:'HEALTHCARE // RISK ANALYSIS',
+    title:'INSURANCE HEALTH<br>ANALYTICS',
+    desc:'Analisi dei rischi e dei modelli di pricing sui portafogli assicurativi sanitari. Identificazione dei fattori chiave dei premi, moltiplicatori dei costi medici e matrici di correlazione tra fumatori, età e BMI.',
+    tags:['Power BI','Healthcare','Risk Analysis','DAX'],
+    notion:null,
+    github:'https://app.powerbi.com/view?r=eyJrIjoiN2MyNGE3YjQtODM1NS00YTJlLTg0NzMtMWZmOWE2ZmUxOGNmIiwidCI6IjFmNTRhMThlLTg0MjUtNDdiYi1hMDk3LTczODg2ZTM1MTE4YSIsImMiOjh9'
+  }
 ];
 const pg = document.getElementById('projectsGrid');
 if (pg) {
@@ -576,7 +568,8 @@ if (pg) {
     if (p.notion && p.github) {
       links = `<a href="${p.notion}" target="_blank" rel="noopener">View on Notion ↗</a><span class="sep">|</span><a class="gh" href="${p.github}" target="_blank" rel="noopener">GitHub ↗</a>`;
     } else if (p.github) {
-      links = `<a class="gh" href="${p.github}" target="_blank" rel="noopener">View on GitHub ↗</a>`;
+      const linkText = p.github.includes('powerbi.com') ? 'View Dashboard ↗' : 'View on GitHub ↗';
+      links = `<a class="gh" href="${p.github}" target="_blank" rel="noopener">${linkText}</a>`;
     } else if (p.notion) {
       links = `<a href="${p.notion}" target="_blank" rel="noopener">View on Notion ↗</a>`;
     }
@@ -626,7 +619,6 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 
-// Add reveal class and observe
 const revealElements = document.querySelectorAll('.about-photo, .about-content, .about-chart-card, .sec-head, .sec-title, .sk, .lang, .cert, .proj, .contact-headline, .contact-sub, .contact-links-row, .contact-info, .status-block, .quote-block');
 revealElements.forEach((el) => {
   el.classList.add('reveal');
@@ -638,7 +630,7 @@ function openModal(id) {
   const modal = document.getElementById(id);
   if (modal) {
     modal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Prevents background scrolling
+    document.body.style.overflow = 'hidden';
   }
 }
 
@@ -650,7 +642,6 @@ function closeModal(id) {
   }
 }
 
-// Close modals on Escape key
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     document.querySelectorAll('.gdc-modal-overlay').forEach(m => {
